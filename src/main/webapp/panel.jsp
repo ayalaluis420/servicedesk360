@@ -10,9 +10,9 @@
     </head>
     <body>
         <main class="panel-usuario">
-            <h1>Bienvenido, ${sessionScope.usuarioNombre}</h1>
-            <p>Correo: ${sessionScope.usuarioCorreo}</p>
-            <p>Rol: ${sessionScope.usuarioRolDescripcion}</p>
+            <h1>Bienvenido, ${sessionScope.usuarioAutenticado.nombreCompleto}</h1>
+            <p>Correo: ${sessionScope.usuarioAutenticado.correo}</p>
+            <p>Rol: ${sessionScope.usuarioAutenticado.rol}</p>
             <div class="tarjetas-panel">
                 <section class="tarjeta-panel">
                     <h2>Solicitudes</h2>

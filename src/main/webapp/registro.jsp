@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -12,26 +13,37 @@
         <main class="contenedor-formulario">
             <h1>Crear cuenta temporal</h1>
             <p>Complete la información para ingresar al caso modelo.</p>
-            <div class="alerta error">${mensajeError}</div>
+
+            <c:if test="${not empty errores}">
+                <div class="alerta error">
+                    <ul>
+                        <c:forEach var="e" items="${errores}">
+                            <li>${e}</li>
+                        </c:forEach>
+                    </ul>
+                </div>
+            </c:if>
+
             <form action="${pageContext.request.contextPath}/registro"
                   method="post" autocomplete="off">
                 <div class="grupo-campo">
                     <label for="nombre">Nombre completo</label>
                     <input id="nombre" name="nombre" type="text"
-                           maxlength="80" required>
+                           maxlength="80" value="${nombreAnterior}" required>
                 </div>
                 <div class="grupo-campo">
                     <label for="correo">Correo</label>
                     <input id="correo" name="correo" type="email"
-                           maxlength="100" required>
+                           maxlength="100" value="${correoAnterior}" required>
                 </div>
-
                 <div class="grupo-campo">
                     <label for="rol">Rol inicial</label>
                     <select id="rol" name="rol" required>
                         <option value="">Seleccione</option>
-                        <option value="SOLICITANTE">Solicitante</option>
-                        <option value="TECNICO">Técnico</option>
+                        <option value="SOLICITANTE"
+                            ${rolAnterior == 'SOLICITANTE' ? 'selected' : ''}>Solicitante</option>
+                        <option value="TECNICO"
+                            ${rolAnterior == 'TECNICO' ? 'selected' : ''}>Técnico</option>
                     </select>
                 </div>
                 <div class="grupo-campo">
