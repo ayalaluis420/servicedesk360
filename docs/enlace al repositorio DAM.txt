@@ -1,16 +1,24 @@
-Repositorio del proyecto ServiceDesk 360 - Desarrollo de Aplicaciones Multiplataforma
+Repositorio del proyecto ServiceDesk 360
 
-Repositorio:
-https://github.com/ayalaluis420/servicedesk360
+URL: https://github.com/ayalaluis420/servicedesk360
 
-Rama de la Guia 5 (MySQL, JDBC y transacciones):
-https://github.com/ayalaluis420/servicedesk360/tree/guia05-jdbc
+Guía 1 (entorno y primera aplicacion web):
+Rama: main
+Commit: bec8509 - "Guia 01: Entorno y primera aplicacion web"
 
-Archivos principales de la Guia 5:
-- sql/01_esquema_servicedesk360.sql
-- sql/02_datos_prueba.sql
-- sql/03_pruebas_integridad.sql
-- src/main/java/sv/edu/itca/servicedesk360/persistence/
-- docs/bitacora_semana_05.docx
-- docs/matriz_pruebas_guia05.xlsx
-- docs/diagrama_relacional_guia05.png
+Guía 2 (formularios, sesion y cookies):
+Rama: guia-02-formularios
+Commit: 7ee21c2 - "Guia 02: formularios, sesion y cookies"
+
+Guía 3 (modelo POO e interfaces SOLID):
+Rama: guia-03-poo-solid
+Commit: b4b83a8 - "Guia 03: modelo POO e interfaces SOLID"
+
+Guía 4 (arquitectura MVC, tickets y filtro de autenticacion):
+Rama: guia04-mvc
+Commit: 38f3d84 - "Guia 4: arquitectura MVC, tickets y filtro de autenticacion"
+
+Guía 5 (MySQL, JDBC, consultas parametrizadas y transacciones):
+Rama: guia05-jdbc
+Commit: b176ca7 - "Guia 5: MySQL JDBC y transacciones"
+Commit: b893933 - "Guia 5: evidencias del equipo local en la bitacora"
