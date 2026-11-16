@@ -22,3 +22,7 @@ Guía 5 (MySQL, JDBC, consultas parametrizadas y transacciones):
 Rama: guia05-jdbc
 Commit: b176ca7 - "Guia 5: MySQL JDBC y transacciones"
 Commit: b893933 - "Guia 5: evidencias del equipo local en la bitacora"
+
+Guía 6 (patrón DAO y CRUD de clientes):
+Rama: guia06-dao-crud-clientes
+Commit: 8e9f983 - "Guia 06 - DAO y CRUD de clientes"
