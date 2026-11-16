@@ -16,7 +16,8 @@
             <div class="tarjetas-panel">
                 <section class="tarjeta-panel">
                     <h2>Solicitudes</h2>
-                    <p>Módulo que se desarrollará progresivamente.</p>
+                    <p>Registra y consulta tickets de soporte.</p>
+                    <a href="${pageContext.request.contextPath}/tickets">Gestionar tickets</a>
                 </section>
                 <section class="tarjeta-panel">
                     <h2>Equipos</h2>

@@ -24,7 +24,7 @@ public class PanelServlet extends HttpServlet {
             return;
         }
 
-        request.getRequestDispatcher("/panel.jsp")
+        request.getRequestDispatcher("/WEB-INF/views/panel.jsp")
                 .forward(request, response);
     }
 }

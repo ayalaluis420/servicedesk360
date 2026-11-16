@@ -17,6 +17,8 @@ import sv.edu.itca.servicedesk360.service.ServicioAutenticacion;
 import sv.edu.itca.servicedesk360.service.ServicioRegistro;
 import sv.edu.itca.servicedesk360.service.ValidadorRegistro;
 import sv.edu.itca.servicedesk360.storage.DirectorioCuentasEnMemoria;
+import sv.edu.itca.servicedesk360.storage.DirectorioTicketsEnMemoria;
+import sv.edu.itca.servicedesk360.service.ServicioTickets;
 
 @WebListener
 public class AplicacionListener implements ServletContextListener {
@@ -32,5 +34,11 @@ public class AplicacionListener implements ServletContextListener {
         ServletContext contexto = evento.getServletContext();
         contexto.setAttribute("servicioRegistro", registro);
         contexto.setAttribute("autenticador", autenticador);
+
+        DirectorioTicketsEnMemoria directorioTickets
+                = new DirectorioTicketsEnMemoria();
+        ServicioTickets servicioTickets = new ServicioTickets(
+                directorioTickets, directorioTickets);
+        contexto.setAttribute("servicioTickets", servicioTickets);
     }
 }
