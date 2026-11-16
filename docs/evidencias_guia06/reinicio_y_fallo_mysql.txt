@@ -1,0 +1,16 @@
+== V14: clientes antes de reiniciar Tomcat
+sean.oconnor@demo.local laura.rivas@demo.local carlos.mendez@demo.local ana.lopez@demo.local 
+== V14: clientes después de reiniciar Tomcat (nueva sesión)
+sean.oconnor@demo.local laura.rivas@demo.local carlos.mendez@demo.local ana.lopez@demo.local 
+== V17: MySQL detenido
+GET /clientes -> HTTP 503
+    Error controlado
+    No fue posible completar la operación
+    No fue posible listar clientes. Intente más tarde.
+    Volver al panel
+-- ¿La página muestra SQL o trazas?
+0
+POST guardar -> HTTP 303 -> http://localhost:8080/servicedesk360/clientes
+-- Log del servidor (diagnóstico técnico):
+16-Nov-2026 22:41:40.809 WARNING [http-nio-8080-exec-7] sv.edu.itca.servicedesk360.persistence.DiagnosticoBD.registrar [BD] No fue posible listar clientes | SQLState=08S01 | codigo=0 | Communications link failure
+16-Nov-2026 22:41:41.383 WARNING [http-nio-8080-exec-8] sv.edu.itca.servicedesk360.persistence.DiagnosticoBD.registrar [BD] No fue posible validar el correo | SQLState=08S01 | codigo=0 | Communications link failure

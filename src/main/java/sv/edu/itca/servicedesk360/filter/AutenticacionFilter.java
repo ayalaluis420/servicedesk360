@@ -19,7 +19,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author ayala
  */
-@WebFilter(urlPatterns = {"/panel", "/tickets", "/tickets/*", "/cerrar-sesion"})
+@WebFilter(urlPatterns = {"/panel", "/tickets", "/tickets/*", "/clientes", "/tecnicos",
+    "/cerrar-sesion"})
 public class AutenticacionFilter implements Filter {
 
     @Override

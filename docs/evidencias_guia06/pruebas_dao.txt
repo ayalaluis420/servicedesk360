@@ -1,0 +1,30 @@
+[PASA ] V02  Listado desde MySQL                        | 4 cliente(s)
+[PASA ] V03  Alta válida genera id                      | id generado = 9 | Cliente{id=9, nombre=Cliente DAO, correo=dao.1794868951195@demo.local, activo=true}
+Nov 16, 2026 10:42:31 PM sv.edu.itca.servicedesk360.persistence.DiagnosticoBD registrar
+WARNING: [BD] El correo ya está registrado | SQLState=23000 | codigo=1062 | Duplicate entry 'dao.1794868951195@demo.local' for key 'clientes.uq_cliente_correo'
+[PASA ] V05  Correo duplicado bloqueado                 | existeCorreo (mayúsculas) = true | al editar se excluye a sí mismo = true | UNIQUE: El correo ya está registrado
+[PASA ] V06  Edición actualiza exactamente un registro  | Cliente{id=9, nombre=Cliente DAO editado, correo=dao.editado.1794868951195@demo.local, activo=true} | total 5 -> 5
+[PASA ] V07  Búsqueda de id inexistente                 | Optional.empty()
+[PASA ] V10  Desactivación lógica                       | activo = 0, el registro permanece
+[PASA ] V11  Reactivación                               | activo = 1
+[PASA ] V12  Apóstrofe se guarda como valor             | Cliente{id=11, nombre=Patrick O'Connor, correo=o'connor.1794868951195@demo.local, activo=true}
+[PASA ] E1   Búsqueda LIKE parametrizada                | 'connor' -> 2 | '%' (escapado) -> 0
+[PASA ] E2   listarActivos excluye inactivos            | 5 activo(s) de 6
+[PASA ] E4   Paginación LIMIT/OFFSET                    | listar(2, 0) -> 2 fila(s)
+Nov 16, 2026 10:42:32 PM sv.edu.itca.servicedesk360.persistence.DiagnosticoBD registrar
+WARNING: [BD] No fue posible eliminar. El cliente puede tener registros relacionados. | SQLState=23000 | codigo=1217 | Cannot delete or update a parent row: a foreign key constraint fails
+[PASA ] V09  DELETE con referencias se rechaza          | relaciones del cliente 1 = 1 | No fue posible eliminar. El cliente puede tener registros relacionados.
+[PASA ] V08  DELETE físico sin referencias              | relaciones = 0 | eliminado = true
+[PASA ] T1   Técnico: alta con id generado              | id = 5
+[PASA ] T2   Técnico: edición                           | nivel 2 -> 3
+[PASA ] T3   Técnico: correo duplicado                  | existeCorreo = true
+Nov 16, 2026 10:42:32 PM sv.edu.itca.servicedesk360.persistence.DiagnosticoBD registrar
+WARNING: [BD] No fue posible actualizar el técnico | SQLState=HY000 | codigo=3819 | Check constraint 'chk_tecnico_nivel' is violated.
+[PASA ] T4   Técnico: CHECK nivel 1..3                  | nivel 5 rechazado por MySQL: No fue posible actualizar el técnico
+[PASA ] T5   Técnico: desactivación lógica              | activo = 0
+Nov 16, 2026 10:42:32 PM sv.edu.itca.servicedesk360.persistence.DiagnosticoBD registrar
+WARNING: [BD] No fue posible eliminar. El técnico puede tener tickets asignados. | SQLState=23000 | codigo=1217 | Cannot delete or update a parent row: a foreign key constraint fails
+[PASA ] T6   Técnico con tickets no se elimina          | tickets del técnico 1 = 1 | No fue posible eliminar. El técnico puede tener tickets asignados.
+[PASA ] T7   Técnico: DELETE sin tickets                | eliminado
+
+RESULTADO: todas las pruebas DAO pasaron.

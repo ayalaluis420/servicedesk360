@@ -135,3 +135,123 @@ body {
  border-radius: 10px;
 }
 
+
+/* Guía 6: mantenimientos CRUD (clientes y técnicos) */
+
+.contenedor-crud {
+ width: min(94%, 1000px);
+ margin: 30px auto;
+ background: #ffffff;
+ padding: 24px 28px;
+ border-radius: 12px;
+ box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.barra-crud {
+ display: flex;
+ flex-wrap: wrap;
+ gap: 12px;
+ align-items: center;
+ justify-content: space-between;
+ margin: 14px 0 18px;
+}
+
+.form-busqueda {
+ display: flex;
+ flex-wrap: wrap;
+ gap: 8px;
+ align-items: center;
+}
+
+.form-busqueda input,
+.form-busqueda select {
+ padding: 8px 10px;
+ border: 1px solid #b9b9b9;
+ border-radius: 6px;
+}
+
+.tabla-crud {
+ width: 100%;
+ border-collapse: collapse;
+}
+
+.tabla-crud th,
+.tabla-crud td {
+ padding: 9px 10px;
+ border-bottom: 1px solid #e3e3e3;
+ text-align: left;
+ vertical-align: middle;
+}
+
+.tabla-crud th {
+ background: var(--rojo-itca);
+ color: #ffffff;
+}
+
+.tabla-crud tr.inactivo td {
+ color: #8a8a8a;
+}
+
+.acciones {
+ display: flex;
+ flex-wrap: wrap;
+ gap: 6px;
+ align-items: center;
+}
+
+.acciones form {
+ display: inline;
+ margin: 0;
+}
+
+.acciones button,
+.form-busqueda button {
+ padding: 6px 10px;
+ border: 1px solid #b9b9b9;
+ border-radius: 6px;
+ background: #f3f3f3;
+ cursor: pointer;
+}
+
+.acciones button.peligro {
+ border-color: #e5a59b;
+ background: #fdecea;
+ color: #8a1f11;
+}
+
+.estado {
+ display: inline-block;
+ padding: 2px 8px;
+ border-radius: 10px;
+ font-size: 0.85em;
+ font-weight: bold;
+}
+
+.estado.activo {
+ background: #edf8ef;
+ color: #245c2c;
+}
+
+.estado.inactivo {
+ background: #eeeeee;
+ color: #666666;
+}
+
+.nota {
+ color: #666666;
+ font-size: 0.9em;
+}
+
+.acciones-formulario {
+ align-items: center;
+}
+
+.acciones-formulario button {
+ padding: 10px 18px;
+ border: none;
+ border-radius: 6px;
+ background: var(--dorado-itca);
+ color: #1f1f1f;
+ font-weight: bold;
+ cursor: pointer;
+}

@@ -1,0 +1,8 @@
++------------+--------------------+--------------------------+------------------+-----------+--------+
+| id_cliente | nombre             | correo                   | empresa          | telefono  | activo |
++------------+--------------------+--------------------------+------------------+-----------+--------+
+|          8 | Sean O'Connor      | sean.oconnor@demo.local  | NULL             | NULL      |      1 |
+|          6 | Laura Gómez Rivas  | laura.rivas@demo.local   | NULL             | NULL      |      1 |
+|          2 | Carlos Méndez      | carlos.mendez@demo.local | Comercial El Sol | 7000-0002 |      1 |
+|          1 | Ana López          | ana.lopez@demo.local     | Innovación S.A.  | 7000-0001 |      1 |
++------------+--------------------+--------------------------+------------------+-----------+--------+

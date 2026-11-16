@@ -170,6 +170,60 @@ el flujo HTTP no cambian.
 - Las cuentas de usuario siguen en memoria: después de reiniciar Tomcat hay que registrarse de nuevo.
 - `RegistradorTickets.siguienteId()` deberá desaparecer, porque el id lo genera AUTO_INCREMENT.
 
+## Decisiones de diseño de la semana 6 (DAO y CRUD de Clientes)
+
+### Arquitectura
+`JSP → ClienteServlet → ClienteDAO (interfaz) → ClienteDAOImpl (JDBC) → MySQL`
+
+| Archivo | Responsabilidad |
+|---|---|
+| `model/Cliente` | Entidad de dominio; no conoce JDBC ni HTTP |
+| `dao/ClienteDAO` | Contrato: listar, buscarPorId, existeCorreo, insertar, actualizar, eliminar, cambiarEstado (+ buscar, listarActivos, contarRelaciones y listar paginado de los ejercicios) |
+| `dao/impl/ClienteDAOImpl` | Única clase con SQL de `clientes`; PreparedStatement y try-with-resources; registra el error y lanza `DAOException` |
+| `dao/DAOException` | Excepción de la capa de datos con un mensaje funcional |
+| `controller/ClienteServlet` | `/clientes`: GET para leer, POST para modificar, Post/Redirect/Get con 303 |
+| `controller/Navegacion` | Utilidades de PRG, mensajes flash y lectura segura de ids |
+| `views/clientes/lista.jsp`, `formulario.jsp` | Presentación con EL/JSTL (`c:out`); acciones de escritura solo por POST |
+| `dao/PruebasDAO` | Pruebas de la capa DAO sin HTTP |
+| `sql/04_pruebas_crud_clientes.sql` | Consultas de verificación en MySQL |
+
+**Entidad propia:** el mismo patrón se aplicó al personal técnico (`PersonalTecnico`,
+`PersonalTecnicoDAO`, `PersonalTecnicoDAOImpl`, `TecnicoServlet` en `/tecnicos`).
+
+### Rutas
+| Ruta | Método | Acción | Resultado |
+|---|---|---|---|
+| /clientes | GET | listar (`?q=` búsqueda, `?filtro=activos`) | lista.jsp |
+| /clientes?accion=nuevo | GET | formulario vacío | formulario.jsp |
+| /clientes?accion=editar&id= | GET | carga para edición | formulario.jsp o 303 + "Cliente no encontrado" |
+| /clientes (accion=guardar) | POST | insertar o actualizar | 303 → /clientes, o formulario con error |
+| /clientes (accion=eliminar) | POST | DELETE físico si no tiene relaciones | 303 → /clientes |
+| /clientes (accion=estado) | POST | activar o desactivar | 303 → /clientes |
+
+`/clientes` y `/tecnicos` están protegidas por `AutenticacionFilter`.
+
+### Decisiones
+- **Paquetes:** se mantuvieron `model/`, `controller/` y `views/` de las guías anteriores (la guía
+  sugiere `modelo/`, `controlador/` y `vistas/`); solo se agregaron `dao/` y `dao/impl/`.
+- **Eliminación:** antes del DELETE se cuentan los equipos y tickets del cliente. Con historial no se
+  elimina: se desactiva (`activo = 0`). Las FK de MySQL siguen como última barrera.
+- **Errores controlados:** un id inexistente o inválido redirige con un mensaje (sin traza). Si MySQL no
+  responde, se muestra una página 503 con un mensaje funcional y el detalle técnico queda en el log.
+- **Correo único:** se normaliza a minúsculas y se valida con `existeCorreo` antes de escribir; el
+  UNIQUE de MySQL (1062) es la defensa adicional.
+- **Zona horaria:** `db.properties.example` usa `serverTimezone=America/El_Salvador`.
+
+### Cómo probar
+1. Con la base de la Guía 5 creada, ejecute `PruebasDAO` (Run File). Debe terminar con
+   `RESULTADO: todas las pruebas DAO pasaron.`
+2. Ejecute la aplicación, inicie sesión y entre a **Clientes** desde el panel.
+3. Verifique cada operación en Workbench con `sql/04_pruebas_crud_clientes.sql`.
+
+### Evidencias
+- Matriz de pruebas: `docs/matriz_pruebas_guia06.xlsx`
+- Bitácora: `docs/bitacora_semana_06.docx`
+- Salidas y capturas: `docs/evidencias_guia06/`
+
 ## Equipo
 - Luis Ángel Ayala
 

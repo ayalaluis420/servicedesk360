@@ -96,6 +96,14 @@ public final class ConexionBD {
                 p.getProperty("db.password"));
     }
 
+    /**
+     * Guía 6: nombre usado por las implementaciones DAO. Equivale a
+     * {@link #abrir()}.
+     */
+    public static Connection obtenerConexion() throws SQLException {
+        return abrir();
+    }
+
     /** URL sin parámetros, útil para bitácora sin exponer secretos. */
     public static String urlSinParametros() {
         String url = configuracion().getProperty("db.url").trim();

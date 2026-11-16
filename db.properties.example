@@ -6,7 +6,10 @@
 # y reemplace CAMBIAR_LOCALMENTE por la clave real de servicedesk_app.
 #
 # El archivo db.properties con la clave real NUNCA se sube a Git.
+#
+# serverTimezone debe coincidir con la zona horaria del servidor MySQL
+# (con UTC las fechas aparecían 6 horas atrasadas, ver bitácora semana 5).
 
-db.url=jdbc:mysql://localhost:3306/servicedesk360_db?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
+db.url=jdbc:mysql://localhost:3306/servicedesk360_db?serverTimezone=America/El_Salvador&useUnicode=true&characterEncoding=UTF-8
 db.user=servicedesk_app
 db.password=CAMBIAR_LOCALMENTE

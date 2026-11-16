@@ -1,0 +1,17 @@
+[PASA ] V02  /clientes muestra 2 cliente(s) desde MySQL
+[PASA ] V03  POST -> 303 (PRG) | Cliente registrado correctamente.
+[PASA ] V13  filas antes/después del refresh: 3/3; el refresh repite solo el GET
+[PASA ] V04  servidor responde con error de validación; filas 3 -> 3
+[PASA ] V05  formulario muestra: El correo ya está registrado.
+[PASA ] V06  id 6 se conserva; filas 3 -> 3; Cliente actualizado correctamente.
+[PASA ] V07  id=999999 y id=abc -> redirección a la lista con "Cliente no encontrado." (sin traza)
+[PASA ] GET  GET /clientes?accion=eliminar no elimina (filas 3 -> 3)
+[PASA ] V08  Cliente eliminado.
+[PASA ] V09  No se puede eliminar: el cliente tiene 2 registro(s) relacionado(s) (equipos o tickets). Desactívelo para conservar su historial.
+[PASA ] V10  Cliente desactivado. Estado: Inactivo
+[PASA ] E2   filtro "Solo activos" oculta al cliente inactivo (2 fila(s))
+[PASA ] V11  Cliente activado.
+[PASA ] V12  "Sean O'Connor" guardado y mostrado
+[PASA ] E1   buscar "connor" -> 1 fila(s)
+[PASA ] T1   Técnico registrado correctamente.
+[PASA ] T6   No se puede eliminar: el técnico tiene 1 ticket(s) asignado(s). Desactívelo para conservar el historial.

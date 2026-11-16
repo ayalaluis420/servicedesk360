@@ -1,0 +1,27 @@
+== V15: ¿SQL o JDBC en Servlets y JSP de la Guía 6? (sentencias SQL, java.sql, PreparedStatement)
+Sin coincidencias: no hay sentencias SQL, imports de java.sql ni PreparedStatement en controladores ni vistas.
+
+== ¿Las entidades importan JDBC o Servlet?
+Sin coincidencias.
+
+== ¿Los DAO conocen request/response?
+Sin coincidencias.
+
+== V16: aperturas de conexión dentro de try-with-resources
+obtenerConexion() en DAO: src/main/java/sv/edu/itca/servicedesk360/dao/impl/ClienteDAOImpl.java:11 src/main/java/sv/edu/itca/servicedesk360/dao/impl/PersonalTecnicoDAOImpl.java:8
+try (Connection ...) en DAO: src/main/java/sv/edu/itca/servicedesk360/dao/impl/ClienteDAOImpl.java:11 src/main/java/sv/edu/itca/servicedesk360/dao/impl/PersonalTecnicoDAOImpl.java:8
+
+(11 y 8 métodos: cada obtenerConexion() está dentro de un try-with-resources)
+
+== Modificaciones solo por POST: formularios de acción en las vistas
+src/main/webapp/WEB-INF/views/clientes/formulario.jsp:23 -> post
+src/main/webapp/WEB-INF/views/clientes/lista.jsp:30 -> get   (formulario de búsqueda: solo lectura)
+src/main/webapp/WEB-INF/views/clientes/lista.jsp:60 -> post
+src/main/webapp/WEB-INF/views/clientes/lista.jsp:67 -> post
+src/main/webapp/WEB-INF/views/tecnicos/formulario.jsp:23 -> post
+src/main/webapp/WEB-INF/views/tecnicos/lista.jsp:47 -> post
+src/main/webapp/WEB-INF/views/tecnicos/lista.jsp:53 -> post
+
+== V18: secretos en el repositorio
+Sin claves reales (solo CAMBIAR_LOCALMENTE).
+.gitignore:9:db.properties	db.properties
