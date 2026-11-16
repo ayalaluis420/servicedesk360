@@ -18,7 +18,9 @@
         <p><c:out value="${mensajeExito}" /></p>
 </c:if>
 <p><a href="${pageContext.request.contextPath}/tickets/nuevo">
-        Abrir nuevo ticket</a></p>
+        Abrir nuevo ticket</a> |
+    <a href="${pageContext.request.contextPath}/tickets/bd">
+        Ver tickets guardados en MySQL (Guía 5)</a></p>
 <table border="1">
     <thead>
         <tr>

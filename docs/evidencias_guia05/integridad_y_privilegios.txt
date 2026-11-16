@@ -1,0 +1,48 @@
+== mysql < sql/03_pruebas_integridad.sql (usuario administrativo)
+ERROR 1452 (23000) at line 18: Cannot add or update a child row: a foreign key constraint fails (`servicedesk360_db`.`equipos`, CONSTRAINT `fk_equipo_cliente` FOREIGN KEY (`id_cliente`) REFERENCES `clientes` (`id_cliente`))
+ERROR 1062 (23000) at line 24: Duplicate entry 'ana.lopez@demo.local' for key 'clientes.uq_cliente_correo'
+ERROR 3819 (HY000) at line 30: Check constraint 'chk_ticket_prioridad' is violated.
+ERROR 3819 (HY000) at line 36: Check constraint 'chk_tecnico_nivel' is violated.
+ERROR 1451 (23000) at line 41: Cannot delete or update a parent row: a foreign key constraint fails (`servicedesk360_db`.`equipos`, CONSTRAINT `fk_equipo_cliente` FOREIGN KEY (`id_cliente`) REFERENCES `clientes` (`id_cliente`))
++-----------+----------------------+----------------+----------------------------------------+
+| id_ticket | titulo               | id_seguimiento | detalle                                |
++-----------+----------------------+----------------+----------------------------------------+
+|         1 | Impresora no imprime |              1 | Ticket registrado con datos de prueba. |
++-----------+----------------------+----------------+----------------------------------------+
+
+== SHOW GRANTS FOR servicedesk_app
++------------------------------------------------------------------------------------------------+
+| Grants for servicedesk_app@localhost                                                           |
++------------------------------------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO `servicedesk_app`@`localhost`                                            |
+| GRANT SELECT, INSERT, UPDATE, DELETE ON `servicedesk360_db`.* TO `servicedesk_app`@`localhost` |
++------------------------------------------------------------------------------------------------+
+
+== DROP TABLE como servicedesk_app
+ERROR 1142 (42000) at line 1: DROP command denied to user 'servicedesk_app'@'localhost' for table 'seguimientos'
+
+== Restricciones (information_schema)
++--------------+-----------------------+-----------------+
+| TABLE_NAME   | CONSTRAINT_NAME       | CONSTRAINT_TYPE |
++--------------+-----------------------+-----------------+
+| categorias   | PRIMARY               | PRIMARY KEY     |
+| categorias   | uq_categoria_nombre   | UNIQUE          |
+| clientes     | PRIMARY               | PRIMARY KEY     |
+| clientes     | uq_cliente_correo     | UNIQUE          |
+| equipos      | fk_equipo_cliente     | FOREIGN KEY     |
+| equipos      | PRIMARY               | PRIMARY KEY     |
+| equipos      | uq_equipo_codigo      | UNIQUE          |
+| seguimientos | fk_seguimiento_ticket | FOREIGN KEY     |
+| seguimientos | PRIMARY               | PRIMARY KEY     |
+| tecnicos     | chk_tecnico_nivel     | CHECK           |
+| tecnicos     | PRIMARY               | PRIMARY KEY     |
+| tecnicos     | uq_tecnico_correo     | UNIQUE          |
+| tickets      | chk_ticket_estado     | CHECK           |
+| tickets      | chk_ticket_prioridad  | CHECK           |
+| tickets      | chk_ticket_titulo     | CHECK           |
+| tickets      | fk_ticket_categoria   | FOREIGN KEY     |
+| tickets      | fk_ticket_cliente     | FOREIGN KEY     |
+| tickets      | fk_ticket_equipo      | FOREIGN KEY     |
+| tickets      | fk_ticket_tecnico     | FOREIGN KEY     |
+| tickets      | PRIMARY               | PRIMARY KEY     |
++--------------+-----------------------+-----------------+

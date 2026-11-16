@@ -1,0 +1,22 @@
+== Paso 20: credenciales inválidas
+Configuración: mala.properties
+Nov 16, 2026 5:42:17 PM sv.edu.itca.servicedesk360.persistence.DiagnosticoBD registrar
+WARNING: [BD] Prueba de conexión | SQLState=28000 | codigo=1,045 | Access denied for user 'servicedesk_app'@'localhost' (using password: YES)
+Conexión fallida (controlado): La aplicación no pudo autenticarse con la base de datos. Contacte al administrador.
+SQLState: 28000 | código: 1045
+== Paso 21: servidor detenido
+Configuración: /root/.servicedesk360/db.properties
+Nov 16, 2026 5:42:19 PM sv.edu.itca.servicedesk360.persistence.DiagnosticoBD registrar
+WARNING: [BD] Prueba de conexión | SQLState=08S01 | codigo=0 | Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+Conexión fallida (controlado): El servicio de datos no está disponible. Intente más tarde.
+SQLState: 08S01 | código: 0
+== Prueba 13: reinicio del servidor
++-----------+-----------------------------+----------------------------------------+
+| id_ticket | titulo                      | detalle                                |
++-----------+-----------------------------+----------------------------------------+
+|         1 | Impresora no imprime        | Ticket registrado con datos de prueba. |
+|         3 | Error al ingresar al portal | Ticket registrado desde la Gu�a 5      |
+|         7 | Impresora con ruido         | Registro inicial                       |
++-----------+-----------------------------+----------------------------------------+

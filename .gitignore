@@ -4,3 +4,7 @@ target/
 *.class
 .netbeans/
 nbproject/private/
+
+# Guía 5: nunca subir credenciales reales
+db.properties
+*.env

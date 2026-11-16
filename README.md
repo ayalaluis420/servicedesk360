@@ -9,6 +9,8 @@ Caso modelo de una aplicación web para gestionar solicitudes de soporte técnic
 - Apache Tomcat 9 (javax.servlet)
 - Apache NetBeans
 - Maven
+- MySQL Server 8.0+ y MySQL Workbench (desde la semana 5)
+- MySQL Connector/J 26.7.0 (JDBC)
 
 ## Requisitos
 1. JDK configurado.
@@ -113,6 +115,60 @@ el flujo HTTP no cambian.
 - La única regla de autorización es la del servicio, que impide que un técnico cree
   tickets.
 - `index.jsp`, `login.jsp` y `registro.jsp` siguen fuera de `WEB-INF`.
+
+## Decisiones de diseño de la semana 5 (MySQL, JDBC y transacciones)
+
+### Estructura agregada
+| Archivo | Propósito |
+|---|---|
+| `sql/01_esquema_servicedesk360.sql` | Base `servicedesk360_db`, 6 tablas con PK, FK, UNIQUE, NOT NULL y CHECK, y el usuario `servicedesk_app` |
+| `sql/02_datos_prueba.sql` | Datos mínimos: clientes, categorías, técnicos, equipos y un ticket con seguimiento |
+| `sql/03_pruebas_integridad.sql` | Sentencias que **deben fallar** (FK, UNIQUE, CHECK, borrado de padre) y consultas de consistencia |
+| `db.properties.example` | Plantilla de configuración sin contraseña real |
+| `persistence/ConexionBD` | Fábrica de conexiones; lee `~/.servicedesk360/db.properties` |
+| `persistence/DiagnosticoBD` | Registra SQLState/código en el log y devuelve un mensaje seguro al usuario |
+| `persistence/ClientesJdbc` | Búsqueda por correo (PreparedStatement) e inserción con clave generada |
+| `persistence/TicketsJdbc` | Transacción ticket + seguimiento, transacción de 3 operaciones, listado con JOIN y filtro estado + prioridad |
+| `persistence/PruebaConexion` | Prueba de conexión y metadatos (pasos 10, 20 y 21) |
+| `persistence/PruebasJdbc` | Ejecuta la matriz de pruebas y muestra PASA/FALLA |
+| `controller/TicketsBdServlet` | Ruta `/tickets/bd` (protegida) que lista los tickets guardados en MySQL |
+
+![Modelo relacional](docs/diagrama_relacional_guia05.png)
+
+### Cómo reproducir el laboratorio
+1. En MySQL Workbench, con la conexión administrativa, abra `sql/01_esquema_servicedesk360.sql`.
+   **Cambie la contraseña de ejemplo** de `servicedesk_app` por una propia y ejecute el script.
+2. Ejecute `sql/02_datos_prueba.sql`.
+3. Cree la carpeta `%USERPROFILE%\.servicedesk360` (Windows) o `~/.servicedesk360` (Linux/macOS),
+   copie allí `db.properties.example` como `db.properties` y coloque la contraseña elegida.
+4. En NetBeans: *Clean and Build* (debe terminar en BUILD SUCCESS).
+5. Ejecute `PruebaConexion` (clic derecho → *Run File*). Debe mostrar `Conexión válida: true`.
+6. Ejecute `PruebasJdbc`. Debe terminar con `RESULTADO: todas las pruebas pasaron.`
+7. Ejecute la aplicación en Tomcat, inicie sesión y abra `/servicedesk360/tickets/bd`.
+   Reinicie Tomcat y compruebe que los tickets siguen ahí.
+8. Ejecute una por una las sentencias de `sql/03_pruebas_integridad.sql` y capture los errores.
+
+### Decisiones
+- **Mínimo privilegio:** la aplicación usa `servicedesk_app` (SELECT, INSERT, UPDATE, DELETE), nunca root.
+- **Credenciales fuera del código y de Git:** `db.properties` está en `.gitignore`.
+- **Sin conexión global:** cada operación abre su conexión y la cierra con try-with-resources.
+- **Driver registrado explícitamente:** dentro de Tomcat, `DriverManager` no descubre el driver de
+  `WEB-INF/lib` ("No suitable driver found"), por eso `ConexionBD` usa `Class.forName`.
+- **Esquema alineado con el modelo Java:** los CHECK de prioridad y estado usan los mismos valores
+  que `PrioridadTicket` y `EstadoTicket` (incluidos `CRITICA` y `RESUELTO`), y `nivel_soporte` está entre 1 y 3.
+- **Java 11:** el `pom.xml` usa `release 11`. Se retiró la configuración *endorsed* de NetBeans, que no
+  es compatible con Java 9+.
+
+### Evidencias
+- Matriz de pruebas: `docs/matriz_pruebas_guia05.xlsx`
+- Bitácora técnica y de decisiones: `docs/bitacora_semana_05.docx`
+- Salidas de las pruebas: `docs/evidencias_guia05/`
+
+### Limitaciones (pendientes para la Guía 6)
+- El listado principal `/tickets` y el registro de tickets siguen usando `DirectorioTicketsEnMemoria`;
+  `/tickets/bd` es una vista de laboratorio.
+- Las cuentas de usuario siguen en memoria: después de reiniciar Tomcat hay que registrarse de nuevo.
+- `RegistradorTickets.siguienteId()` deberá desaparecer, porque el id lo genera AUTO_INCREMENT.
 
 ## Equipo
 - Luis Ángel Ayala

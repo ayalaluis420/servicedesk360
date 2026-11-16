@@ -1,0 +1,12 @@
+# Archivo que SÍ puede permanecer en el proyecto (sin secreto real).
+#
+# Copie este archivo a:
+#   Windows:     %USERPROFILE%\.servicedesk360\db.properties
+#   Linux/macOS: ~/.servicedesk360/db.properties
+# y reemplace CAMBIAR_LOCALMENTE por la clave real de servicedesk_app.
+#
+# El archivo db.properties con la clave real NUNCA se sube a Git.
+
+db.url=jdbc:mysql://localhost:3306/servicedesk360_db?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
+db.user=servicedesk_app
+db.password=CAMBIAR_LOCALMENTE

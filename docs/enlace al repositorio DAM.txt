@@ -1,0 +1,16 @@
+Repositorio del proyecto ServiceDesk 360 - Desarrollo de Aplicaciones Multiplataforma
+
+Repositorio:
+https://github.com/ayalaluis420/servicedesk360
+
+Rama de la Guia 5 (MySQL, JDBC y transacciones):
+https://github.com/ayalaluis420/servicedesk360/tree/guia05-jdbc
+
+Archivos principales de la Guia 5:
+- sql/01_esquema_servicedesk360.sql
+- sql/02_datos_prueba.sql
+- sql/03_pruebas_integridad.sql
+- src/main/java/sv/edu/itca/servicedesk360/persistence/
+- docs/bitacora_semana_05.docx
+- docs/matriz_pruebas_guia05.xlsx
+- docs/diagrama_relacional_guia05.png

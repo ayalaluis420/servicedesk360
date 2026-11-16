@@ -1,0 +1,19 @@
+[PASA ] 5    ConexionBD abre y cierra conexión             | isValid(3) = true
+[PASA ] 7    PreparedStatement busca por parámetro         | ClienteRegistro{id=1, nombre=Ana López, correo=ana.lopez@demo.local, activo=true}
+[PASA ] 8    Entrada especial se trata como dato           | Entrada tratada como dato: sin coincidencias
+[PASA ] 9    Inserción devuelve clave generada             | id_cliente generado = 3
+[PASA ] E1   UNIQUE rechaza correo repetido                | SQLState=23000 código=1062 | usuario ve: Los datos no cumplen las reglas de integridad del sistema.
+[PASA ] 10   FK rechaza referencia inexistente             | SQLState=23000 código=1216
+[PASA ] 11   Transacción exitosa confirma 2 operaciones    | Ticket confirmado: 3 | tickets 1->2 | seguimientos 1->2
+[PASA ] 12a  Rollback con categoría inexistente            | código=1216 | tickets 2->2 | seguimientos 2->2
+[PASA ] 12b  Rollback cuando falla el seguimiento          | código=1048 | tickets 2->2 | tickets sin seguimiento = 0
+[PASA ] E2   Búsqueda estado + prioridad parametrizada     | 1 fila(s) ABIERTO/MEDIA
+[PASA ] E3a  3 operaciones: falla la tercera               | código=1216 | tickets 2->2 | seguimientos 2->2
+[PASA ] E3b  3 operaciones: caso exitoso                   | Ticket 7 registrado y ASIGNADO
+[PASA ] 14   SQLException se controla                      | usuario ve: La aplicación no pudo autenticarse con la base de datos. Contacte al administrador.
+[PASA ] 17   Listado de tickets con JOIN                   | 3 ticket(s)
+       #7 [BAJA/ASIGNADO] Impresora con ruido - Carlos Méndez (Hardware)
+       #3 [MEDIA/ABIERTO] Error al ingresar al portal - Ana López (Software)
+       #1 [MEDIA/ASIGNADO] Impresora no imprime - Carlos Méndez (Hardware)
+
+RESULTADO: todas las pruebas pasaron.
