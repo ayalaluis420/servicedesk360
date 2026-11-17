@@ -1,0 +1,15 @@
+== Prueba 13: clientes en /app/clientes/lista.xhtml antes de reiniciar Tomcat
+valeria.campos@demo.local sean.oconnor@demo.local laura.rivas@demo.local carlos.mendez@demo.local ana.lopez@demo.local 
+== Después de reiniciar Tomcat (nueva sesión)
+valeria.campos@demo.local sean.oconnor@demo.local laura.rivas@demo.local carlos.mendez@demo.local ana.lopez@demo.local 
+
+== Paso 34: los mismos registros en MySQL
++------------+---------------------+---------------------------+--------+
+| id_cliente | nombre              | correo                    | activo |
++------------+---------------------+---------------------------+--------+
+|          9 | Valeria Campos Ruiz | valeria.campos@demo.local |      1 |
+|          5 | Sean O'Connor       | sean.oconnor@demo.local   |      1 |
+|          3 | Laura Gómez Rivas   | laura.rivas@demo.local    |      1 |
+|          2 | Carlos Méndez       | carlos.mendez@demo.local  |      1 |
+|          1 | Ana López           | ana.lopez@demo.local      |      1 |
++------------+---------------------+---------------------------+--------+

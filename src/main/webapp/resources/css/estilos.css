@@ -341,3 +341,73 @@ h2 {
  margin-top: 26px;
  font-size: 1.15em;
 }
+
+/* Guía 8: vistas JSF */
+
+.etiqueta-jsf {
+ display: inline-block;
+ padding: 2px 8px;
+ border-radius: 6px;
+ background: #1f5f99;
+ color: #ffffff;
+ font-size: 0.45em;
+ vertical-align: middle;
+}
+
+input.boton-jsf {
+ padding: 10px 16px;
+ border: none;
+ border-radius: 6px;
+ background: var(--dorado-itca);
+ color: #1f1f1f;
+ font-weight: bold;
+ cursor: pointer;
+}
+
+ul.mensajes {
+ list-style: none;
+ padding: 0;
+ margin: 0 0 14px;
+}
+
+.grilla-formulario {
+ width: 100%;
+ margin-bottom: 16px;
+}
+
+.grilla-formulario td {
+ padding: 4px 0;
+}
+
+.grilla-formulario label {
+ font-weight: bold;
+}
+
+.grilla-formulario input[type="text"] {
+ width: 100%;
+ padding: 11px 12px;
+ border: 1px solid #b9b9b9;
+ border-radius: 8px;
+}
+
+.acciones-formulario input[type="submit"] {
+ padding: 10px 18px;
+ border: none;
+ border-radius: 6px;
+ background: var(--dorado-itca);
+ color: #1f1f1f;
+ font-weight: bold;
+ cursor: pointer;
+}
+
+.acciones-formulario input.secundario {
+ background: #eeeeee;
+}
+
+.acciones input[type="submit"] {
+ padding: 6px 10px;
+ border: 1px solid #b9b9b9;
+ border-radius: 6px;
+ background: #f3f3f3;
+ cursor: pointer;
+}

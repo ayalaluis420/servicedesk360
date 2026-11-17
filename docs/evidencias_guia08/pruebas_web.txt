@@ -1,0 +1,20 @@
+[PASA ] 1    FacesServlet procesa /app/inicio.xhtml (HTML generado, no el XHTML crudo)
+[PASA ] E3   sesionBean (@SessionScoped) muestra el usuario autenticado
+[PASA ] E4   outcome "clientes" (regla en faces-config.xml) -> /app/clientes/lista.xhtml
+[PASA ] 3/4  @PostConstruct cargó 4 clientes reales de MySQL en h:dataTable
+[PASA ] 10   irNuevo() -> outcome implícito "formulario?faces-redirect=true" -> /app/clientes/formulario.xhtml
+[PASA ] 14   campos vacíos -> "El nombre es obligatorio.  | 	El correo es obligatorio." (falla Process Validations; guardar() no se ejecuta)
+[PASA ] 5/6  inputs -> bean -> MySQL: "Cliente registrado correctamente." | filas 4 -> 5
+[PASA ] 9    el FacesMessage sobrevive al redirect (Flash.setKeepMessages)
+[PASA ] 11   POST -> 302 redirect -> GET lista.xhtml
+[PASA ] 11b  refresh tras guardar: filas 5 -> 5 (no se duplica)
+[PASA ] 35   correo duplicado -> "El correo ya está registrado." (ClienteService)
+[PASA ] 7a   editar(c) -> /app/clientes/formulario.xhtml?id=9; f:viewAction cargó "Valeria Campos"
+[PASA ] 7    "Cliente actualizado correctamente." | id 9 se conserva | filas 5 -> 5
+[PASA ] ID   ?id=999999 -> lista.xhtml con "Cliente no encontrado."
+[PASA ] 8    "Cliente desactivado." | Activo: No (el registro permanece)
+[PASA ] 8b   Cliente activado.
+[PASA ] IMM  Cancelar (immediate="true") vuelve sin validar campos vacíos
+[PASA ] CMP  /clientes (Servlet + JSP) muestra el mismo registro guardado desde JSF
+[PASA ] 15   ticketBean reutiliza TicketDetalleDTO: 18 filas con cliente/equipo/categoría/técnico
+[PASA ] E2   filtro ABIERTO + MEDIA por postback (sin AJAX): 3 fila(s)

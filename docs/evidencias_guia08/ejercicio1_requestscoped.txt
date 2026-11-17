@@ -1,0 +1,3 @@
+GET formulario?id=1 -> título "Editar cliente JSF", nombre cargado "Ana López"
+Postback Guardar -> URL /app/clientes/formulario.xhtml | título "Nuevo cliente JSF" | mensaje: 	El correo ya está registrado. 
+Resultado en MySQL: nombre de Ana = "Ana López" | filas 4 -> 4

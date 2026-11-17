@@ -6,6 +6,7 @@ Caso modelo de una aplicación web para gestionar solicitudes de soporte técnic
 ## Tecnologías
 - Java 11 o superior
 - JSP, Servlets, EL y JSTL 1.2
+- JSF 2.3 (Mojarra 2.3.21) y CDI (Weld 3.1.9) desde la semana 8 (espacio de nombres javax.*)
 - Apache Tomcat 9 (javax.servlet)
 - Apache NetBeans
 - Maven
@@ -265,6 +266,51 @@ caracteres; prioridad del catálogo (`CRITICA` sin tilde, como en MySQL); seguim
 - Bitácora e incidencias: `docs/bitacora_semana_07.docx`
 - Diagrama: `docs/diagrama_relacional_guia07.png`
 - Salidas y capturas: `docs/evidencias_guia07/`
+
+## Decisiones de diseño de la semana 8 (JSF y Managed Beans)
+
+### Migración de la capa web
+`XHTML (JSF) → Managed Bean → ClienteService / TicketDAO → DAO JDBC → MySQL`
+
+| Antes (Servlet/JSP) | Ahora (JSF) |
+|---|---|
+| `WEB-INF/views/clientes/lista.jsp` | `app/clientes/lista.xhtml` (`h:dataTable`) |
+| `WEB-INF/views/clientes/formulario.jsp` | `app/clientes/formulario.xhtml` (`f:viewParam` + `f:viewAction` para editar) |
+| `ClienteServlet` | `bean/ClienteBean` (`@Named`, `@ViewScoped`) |
+| Reglas dentro del Servlet | `service/ClienteService` (las usan el Servlet y el bean) |
+| Lectura de tickets (JSP) | `app/tickets/lista.xhtml` + `bean/TicketBean` (reutiliza `TicketDetalleDTO`) |
+| Usuario en `HttpSession` | `bean/SesionBean` (`@SessionScoped`) |
+
+Se conservan sin cambios: entidades, DTO, DAO, `ConexionBD`, `TicketService` y MySQL. Los módulos con
+Servlet siguen disponibles para comparar (paso 23).
+
+### Configuración
+- **JSF 2.3 + CDI en Tomcat 9:** Tomcat no incluye JSF ni CDI. Se agregaron Mojarra 2.3.21
+  (`org.glassfish:jakarta.faces`, paquetes `javax.faces`) y `weld-servlet-shaded` 3.1.9.Final.
+  No se mezclan `javax.*` y `jakarta.*`.
+- `web.xml`: `FacesServlet` en `*.xhtml`, `PROJECT_STAGE = Production`, `LOG_CICLO_VIDA` (false por defecto).
+- `faces-config.xml`: `CicloVidaListener` y navegación explícita (`clientes`, `tickets`, `inicio`).
+- `beans.xml`: `bean-discovery-mode="annotated"`. `JsfConfig` activa JSF 2.3 (`@FacesConfig`).
+- Las vistas están en `webapp/app/` (no en `WEB-INF`, que no admite redirects) y `/app/*` está protegido por
+  `AutenticacionFilter`.
+
+### Decisiones
+- **Edición con `@ViewScoped`:** lista y formulario son vistas distintas, así que el formulario recibe un bean
+  nuevo; el id viaja como parámetro (`formulario.xhtml?id=N`) y se carga con `f:viewAction`.
+- **Mensajes tras redirect:** `Flash.setKeepMessages(true)` (`Mensajes.conservarTrasRedireccion()`).
+- **Ciclo de vida:** con `LOG_CICLO_VIDA = true` el log muestra cada fase; un postback inválido salta de Process
+  Validations a Render Response y `guardar()` no se ejecuta.
+
+### Cómo probar
+1. Clean and Build y Run. Inicie sesión y, en el panel, abra **Versión JSF → Abrir módulo JSF**
+   (`/servicedesk360/app/inicio.xhtml`).
+2. Para observar el ciclo de vida, cambie `servicedesk360.LOG_CICLO_VIDA` a `true` en `web.xml` y revise la salida
+   de Tomcat.
+
+### Evidencias
+- Lista de cotejo: `docs/matriz_pruebas_guia08.xlsx`
+- Bitácora, ciclo de vida y comparación: `docs/bitacora_semana_08.docx`
+- Salidas y capturas: `docs/evidencias_guia08/`
 
 ## Equipo
 - Luis Ángel Ayala

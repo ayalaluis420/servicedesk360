@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<!-- Guía 8, Parte D: listado de clientes con h:dataTable y EL.
+     Sustituye a WEB-INF/views/clientes/lista.jsp + ClienteServlet (GET). -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Clientes (JSF) | ServiceDesk 360</title>
+        <link rel="stylesheet" href="#{request.contextPath}/resources/css/estilos.css"/>
+    </h:head>
+    <h:body>
+        <main class="contenedor-crud">
+            <h:form id="formLista">
+                <p><h:commandLink value="&#8592; Inicio JSF" action="inicio"/>
+                    <span class="nota"> · Usuario: #{sesionBean.nombre}</span></p>
+                <h1>Clientes <span class="etiqueta-jsf">JSF</span></h1>
+
+                <h:messages globalOnly="true" styleClass="mensajes" infoClass="alerta exito" errorClass="alerta error"/>
+
+                <div class="barra-crud">
+                    <h:commandButton value="Nuevo cliente" action="#{clienteBean.irNuevo}" styleClass="boton-jsf"/>
+                </div>
+
+                <h:dataTable id="tablaClientes" value="#{clienteBean.clientes}" var="c"
+                             rendered="#{not empty clienteBean.clientes}"
+                             styleClass="tabla-crud" rowClasses="fila">
+                    <h:column>
+                        <f:facet name="header">ID</f:facet>
+                        #{c.idCliente}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Nombre</f:facet>
+                        #{c.nombre}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Correo</f:facet>
+                        #{c.correo}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Activo</f:facet>
+                        <span class="estado #{c.activo ? 'activo' : 'inactivo'}">#{c.activo ? 'Sí' : 'No'}</span>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Acciones</f:facet>
+                        <div class="acciones">
+                            <h:commandButton value="Editar" action="#{clienteBean.editar(c)}"/>
+                            <h:commandButton value="Desactivar" action="#{clienteBean.desactivar(c)}"
+                                             rendered="#{c.activo}"/>
+                            <h:commandButton value="Activar" action="#{clienteBean.activar(c)}"
+                                             rendered="#{not c.activo}"/>
+                        </div>
+                    </h:column>
+                </h:dataTable>
+
+                <!-- Paso 12: mensaje alternativo sin registros -->
+                <h:panelGroup rendered="#{empty clienteBean.clientes}">
+                    <p>No existen clientes registrados.</p>
+                </h:panelGroup>
+
+                <p class="nota">Total: #{clienteBean.clientes.size()} cliente(s). Datos leídos de MySQL con
+                    ClienteService → ClienteDAO (sin SQL en la vista ni en el bean).</p>
+            </h:form>
+        </main>
+    </h:body>
+</html>

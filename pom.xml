@@ -34,6 +34,22 @@
             <artifactId>mysql-connector-j</artifactId>
             <version>26.7.0</version>
         </dependency>
+
+        <!-- Guía 8: JSF 2.3 (Mojarra). Tomcat 9 no incluye JSF y el proyecto
+             usa el espacio de nombres javax.*, por eso se usa la línea 2.3
+             (el artefacto se llama jakarta.faces, pero sus paquetes son javax.faces). -->
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.faces</artifactId>
+            <version>2.3.21</version>
+        </dependency>
+
+        <!-- Guía 8: CDI (Weld) para @Named, @ViewScoped y @SessionScoped en Tomcat. -->
+        <dependency>
+            <groupId>org.jboss.weld.servlet</groupId>
+            <artifactId>weld-servlet-shaded</artifactId>
+            <version>3.1.9.Final</version>
+        </dependency>
     </dependencies>
     
     <build>

@@ -1,0 +1,45 @@
+
+--- Petición 1 ---
+inicia RESTORE_VIEW 1 | vista: (sin construir)
+termina RESTORE_VIEW 1
+inicia APPLY_REQUEST_VALUES 2 | vista: /app/clientes/formulario.xhtml
+termina APPLY_REQUEST_VALUES 2
+inicia PROCESS_VALIDATIONS 3 | vista: /app/clientes/formulario.xhtml
+termina PROCESS_VALIDATIONS 3
+inicia UPDATE_MODEL_VALUES 4 | vista: /app/clientes/formulario.xhtml
+termina UPDATE_MODEL_VALUES 4
+inicia INVOKE_APPLICATION 5 | vista: /app/clientes/formulario.xhtml
+ClienteBean @PostConstruct (instancia 1109221496)
+termina INVOKE_APPLICATION 5
+inicia RENDER_RESPONSE 6 | vista: /app/clientes/formulario.xhtml
+termina RENDER_RESPONSE 6
+
+--- Petición 2 ---
+inicia RESTORE_VIEW 1 | vista: (sin construir)
+termina RESTORE_VIEW 1
+inicia APPLY_REQUEST_VALUES 2 | vista: /app/clientes/formulario.xhtml
+termina APPLY_REQUEST_VALUES 2
+inicia PROCESS_VALIDATIONS 3 | vista: /app/clientes/formulario.xhtml
+termina PROCESS_VALIDATIONS 3
+inicia RENDER_RESPONSE 6 | vista: /app/clientes/formulario.xhtml
+termina RENDER_RESPONSE 6
+
+--- Petición 3 ---
+inicia RESTORE_VIEW 1 | vista: (sin construir)
+termina RESTORE_VIEW 1
+inicia APPLY_REQUEST_VALUES 2 | vista: /app/clientes/formulario.xhtml
+termina APPLY_REQUEST_VALUES 2
+inicia PROCESS_VALIDATIONS 3 | vista: /app/clientes/formulario.xhtml
+termina PROCESS_VALIDATIONS 3
+inicia UPDATE_MODEL_VALUES 4 | vista: /app/clientes/formulario.xhtml
+termina UPDATE_MODEL_VALUES 4
+inicia INVOKE_APPLICATION 5 | vista: /app/clientes/formulario.xhtml
+ClienteBean.guardar() (INVOKE_APPLICATION) nombre=Cliente Ciclo Vida
+termina INVOKE_APPLICATION 5
+
+--- Petición 4 ---
+inicia RESTORE_VIEW 1 | vista: (sin construir)
+termina RESTORE_VIEW 1
+inicia RENDER_RESPONSE 6 | vista: /app/clientes/lista.xhtml
+ClienteBean @PostConstruct (instancia 226746621)
+termina RENDER_RESPONSE 6

@@ -1,0 +1,25 @@
+== Prueba 12: ¿SQL o JDBC en las vistas XHTML o en los Managed Beans?
+Única coincidencia: el comentario Javadoc de ClienteBean.java:32 ("No contiene SQL ni mantiene Connection/ResultSet"). Ninguna vista ni bean ejecuta SQL.
+
+== ¿Qué usa cada bean?
+src/main/java/sv/edu/itca/servicedesk360/bean/ClienteBean.java:41:    private transient ClienteService clienteService;
+src/main/java/sv/edu/itca/servicedesk360/bean/ClienteBean.java:48:    private ClienteService servicio() {
+src/main/java/sv/edu/itca/servicedesk360/bean/TicketBean.java:29:    private transient TicketDAO ticketDAO;
+src/main/java/sv/edu/itca/servicedesk360/bean/TicketBean.java:36:    private TicketDAO dao() {
+
+== Prueba 16: espacios de nombres (no mezclar javax.* y jakarta.*)
+imports jakarta.* en el código: 0
+imports javax.faces/inject/enterprise/annotation: 17
+namespaces XHTML: xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html" 
+
+== Scopes de los beans
+src/main/java/sv/edu/itca/servicedesk360/bean/ClienteBean.java:35:@Named("clienteBean")
+src/main/java/sv/edu/itca/servicedesk360/bean/ClienteBean.java:36:@ViewScoped
+src/main/java/sv/edu/itca/servicedesk360/bean/SesionBean.java:18:@Named("sesionBean")
+src/main/java/sv/edu/itca/servicedesk360/bean/SesionBean.java:19:@SessionScoped
+src/main/java/sv/edu/itca/servicedesk360/bean/TicketBean.java:22:@Named("ticketBean")
+src/main/java/sv/edu/itca/servicedesk360/bean/TicketBean.java:23:@ViewScoped
+src/main/java/sv/edu/itca/servicedesk360/jsf/JsfConfig.java:12:@ApplicationScoped
+
+== Secretos en el repositorio
+Sin claves reales (solo CAMBIAR_LOCALMENTE).

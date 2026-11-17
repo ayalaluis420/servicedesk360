@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Guía 8: CDI (Weld) gestiona solo las clases con anotación de scope
+     (@ViewScoped, @SessionScoped, @ApplicationScoped...). -->
 <beans xmlns="http://xmlns.jcp.org/xml/ns/javaee"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/beans_2_0.xsd"
-       bean-discovery-mode="all">
+       bean-discovery-mode="annotated">
 </beans>

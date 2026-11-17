@@ -35,6 +35,11 @@
                     <a href="${pageContext.request.contextPath}/equipos">Gestionar equipos</a>
                 </section>
                 <section class="tarjeta-panel">
+                    <h2>Versión JSF</h2>
+                    <p>Clientes y tickets con JSF y Managed Beans (Guía 8).</p>
+                    <a href="${pageContext.request.contextPath}/app/inicio.xhtml">Abrir módulo JSF</a>
+                </section>
+                <section class="tarjeta-panel">
                     <h2>Reportes</h2>
                     <p>Se incorporarán durante la Unidad 5.</p>
                 </section>

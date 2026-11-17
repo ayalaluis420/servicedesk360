@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<!-- Guía 8, Parte K: tickets de solo lectura en JSF reutilizando TicketDetalleDTO y
+     la consulta JOIN de la Guía 7. Ejercicio 2: filtros con acción normal (sin AJAX). -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Tickets (JSF) | ServiceDesk 360</title>
+        <link rel="stylesheet" href="#{request.contextPath}/resources/css/estilos.css"/>
+    </h:head>
+    <h:body>
+        <main class="contenedor-crud ancho">
+            <h:form id="formTickets">
+                <p><h:commandLink value="&#8592; Inicio JSF" action="inicio"/></p>
+                <h1>Tickets <span class="etiqueta-jsf">JSF</span></h1>
+                <h:messages globalOnly="true" styleClass="mensajes" infoClass="alerta exito" errorClass="alerta error"/>
+
+                <div class="barra-crud">
+                    <span class="nota">Mostrando #{ticketBean.tickets.size()} de #{ticketBean.total} ticket(s) (máximo #{ticketBean.limite}).</span>
+                    <div class="form-busqueda">
+                        <h:selectOneMenu id="estado" value="#{ticketBean.estado}">
+                            <f:selectItem itemLabel="Todos los estados" itemValue=""/>
+                            <f:selectItems value="#{ticketBean.estados}"/>
+                        </h:selectOneMenu>
+                        <h:selectOneMenu id="prioridad" value="#{ticketBean.prioridad}">
+                            <f:selectItem itemLabel="Todas las prioridades" itemValue=""/>
+                            <f:selectItems value="#{ticketBean.prioridades}"/>
+                        </h:selectOneMenu>
+                        <h:commandButton value="Filtrar" action="#{ticketBean.filtrar}"/>
+                        <h:commandButton value="Limpiar" action="#{ticketBean.limpiar}"/>
+                    </div>
+                </div>
+
+                <h:dataTable value="#{ticketBean.tickets}" var="t" styleClass="tabla-crud"
+                             rendered="#{not empty ticketBean.tickets}">
+                    <h:column><f:facet name="header">ID</f:facet>##{t.idTicket}</h:column>
+                    <h:column><f:facet name="header">Título</f:facet>#{t.titulo}</h:column>
+                    <h:column><f:facet name="header">Cliente</f:facet>#{t.cliente}</h:column>
+                    <h:column><f:facet name="header">Equipo</f:facet>#{empty t.equipo ? '—' : t.equipo}</h:column>
+                    <h:column><f:facet name="header">Categoría</f:facet>#{t.categoria}</h:column>
+                    <h:column><f:facet name="header">Técnico</f:facet>#{empty t.tecnico ? 'Sin asignar' : t.tecnico}</h:column>
+                    <h:column><f:facet name="header">Prioridad</f:facet>
+                        <span class="prioridad #{t.prioridad.toLowerCase()}">#{t.prioridad}</span></h:column>
+                    <h:column><f:facet name="header">Estado</f:facet>
+                        <span class="estado-ticket">#{t.estado}</span></h:column>
+                </h:dataTable>
+                <h:panelGroup rendered="#{empty ticketBean.tickets}">
+                    <p>No hay tickets con esos filtros.</p>
+                </h:panelGroup>
+            </h:form>
+        </main>
+    </h:body>
+</html>

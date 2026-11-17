@@ -3,7 +3,6 @@ package sv.edu.itca.servicedesk360.controller;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Pattern;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,6 +12,8 @@ import sv.edu.itca.servicedesk360.dao.ClienteDAO;
 import sv.edu.itca.servicedesk360.dao.DAOException;
 import sv.edu.itca.servicedesk360.dao.impl.ClienteDAOImpl;
 import sv.edu.itca.servicedesk360.model.Cliente;
+import sv.edu.itca.servicedesk360.service.ClienteService;
+import sv.edu.itca.servicedesk360.service.ServiceException;
 
 /**
  * Guía 6: controlador del CRUD de Clientes.
@@ -29,13 +30,14 @@ public class ClienteServlet extends HttpServlet {
 
     private static final String VISTA_LISTA = "/WEB-INF/views/clientes/lista.jsp";
     private static final String VISTA_FORMULARIO = "/WEB-INF/views/clientes/formulario.jsp";
-    private static final Pattern CORREO = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
 
     private ClienteDAO clienteDAO;
+    private ClienteService clienteService;
 
     @Override
     public void init() {
         clienteDAO = new ClienteDAOImpl();
+        clienteService = new ClienteService(clienteDAO);
     }
 
     // ----------------------------------------------------------- lecturas
@@ -138,45 +140,31 @@ public class ClienteServlet extends HttpServlet {
         String nombre = Navegacion.texto(req, "nombre");
         String correo = Navegacion.texto(req, "correo").toLowerCase();
 
-        String error = validar(nombre, correo);
-        if (error == null && clienteDAO.existeCorreo(correo, id)) {
-            error = "El correo ya está registrado.";               // V05
-        }
-        if (error != null) {
-            req.setAttribute("error", error);
-            req.setAttribute("cliente", new Cliente(id, nombre, correo, true));
-            req.getRequestDispatcher(VISTA_FORMULARIO).forward(req, resp);
-            return;
-        }
-
+        // Guía 8: las reglas viven en ClienteService (compartidas con ClienteBean de JSF).
+        Cliente cliente;
         if (id == null) {
-            clienteDAO.insertar(new Cliente(null, nombre, correo, true));
-            Navegacion.flash(req, "Cliente registrado correctamente.");
+            cliente = new Cliente(null, nombre, correo, true);
         } else {
-            Optional<Cliente> encontrado = clienteDAO.buscarPorId(id);
+            Optional<Cliente> encontrado = clienteService.buscarPorId(id);
             if (encontrado.isEmpty()) {
                 Navegacion.flashError(req, "Cliente no encontrado.");
                 Navegacion.redirigir(req, resp, "/clientes");
                 return;
             }
-            Cliente actual = encontrado.get();
-            actual.setNombre(nombre);
-            actual.setCorreo(correo);
-            clienteDAO.actualizar(actual);
-            Navegacion.flash(req, "Cliente actualizado correctamente.");
+            cliente = encontrado.get();          // conserva el estado activo
+            cliente.setNombre(nombre);
+            cliente.setCorreo(correo);
         }
-        Navegacion.redirigir(req, resp, "/clientes");
-    }
-
-    /** Reglas del formulario (sección IX.2 de la guía). */
-    private String validar(String nombre, String correo) {
-        if (nombre.length() < 3 || nombre.length() > 120) {
-            return "El nombre debe tener entre 3 y 120 caracteres.";
+        try {
+            boolean insertado = clienteService.guardar(cliente);
+            Navegacion.flash(req, insertado
+                    ? "Cliente registrado correctamente." : "Cliente actualizado correctamente.");
+            Navegacion.redirigir(req, resp, "/clientes");
+        } catch (ServiceException ex) {
+            req.setAttribute("error", ex.getMessage());
+            req.setAttribute("cliente", new Cliente(id, nombre, correo, true));
+            req.getRequestDispatcher(VISTA_FORMULARIO).forward(req, resp);
         }
-        if (correo.isEmpty() || correo.length() > 160 || !CORREO.matcher(correo).matches()) {
-            return "Ingrese un correo válido (máximo 160 caracteres).";
-        }
-        return null;
     }
 
     private void eliminar(HttpServletRequest req, HttpServletResponse resp)
@@ -185,16 +173,12 @@ public class ClienteServlet extends HttpServlet {
         if (id == null) {
             Navegacion.flashError(req, "Cliente no encontrado.");
         } else {
-            // Ejercicio 3: se cuentan las relaciones antes del DELETE físico.
-            int relaciones = clienteDAO.contarRelaciones(id);
-            if (relaciones > 0) {
-                Navegacion.flashError(req, "No se puede eliminar: el cliente tiene "
-                        + relaciones + " registro(s) relacionado(s) (equipos o tickets). "
-                        + "Desactívelo para conservar su historial.");
-            } else if (clienteDAO.eliminar(id)) {
+            try {
+                // Ejercicio 3 (Guía 6): ClienteService cuenta las relaciones antes del DELETE.
+                clienteService.eliminar(id);
                 Navegacion.flash(req, "Cliente eliminado.");
-            } else {
-                Navegacion.flashError(req, "Cliente no encontrado.");
+            } catch (ServiceException ex) {
+                Navegacion.flashError(req, ex.getMessage());
             }
         }
         Navegacion.redirigir(req, resp, "/clientes");

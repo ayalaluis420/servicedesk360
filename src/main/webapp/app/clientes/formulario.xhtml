@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<!-- Guía 8, Parte E: alta y edición de clientes. Sustituye a formulario.jsp.
+     Edición: ?id= se recibe con f:viewParam y el cliente se carga con f:viewAction. -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <f:metadata>
+        <f:viewParam name="id" value="#{clienteBean.idEditar}"/>
+        <f:viewAction action="#{clienteBean.cargarParaEdicion}"/>
+    </f:metadata>
+    <h:head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>#{clienteBean.edicion ? 'Editar' : 'Nuevo'} cliente (JSF) | ServiceDesk 360</title>
+        <link rel="stylesheet" href="#{request.contextPath}/resources/css/estilos.css"/>
+    </h:head>
+    <h:body>
+        <main class="contenedor-formulario">
+            <h1>#{clienteBean.edicion ? 'Editar cliente' : 'Nuevo cliente'} <span class="etiqueta-jsf">JSF</span></h1>
+            <h:panelGroup rendered="#{clienteBean.edicion}">
+                <p class="nota">ID: #{clienteBean.cliente.idCliente} (generado por MySQL, no editable)</p>
+            </h:panelGroup>
+
+            <h:form id="formCliente">
+                <h:messages styleClass="mensajes" infoClass="alerta exito" errorClass="alerta error"/>
+
+                <h:panelGrid columns="1" styleClass="grilla-formulario">
+                    <h:outputLabel for="nombre" value="Nombre:"/>
+                    <!-- Paso 27: required="true" -> si viene vacío falla Process Validations
+                         y guardar() NO se ejecuta (la Guía 9 profundiza en validadores). -->
+                    <h:inputText id="nombre" value="#{clienteBean.cliente.nombre}" required="true"
+                                 requiredMessage="El nombre es obligatorio." maxlength="120"/>
+
+                    <h:outputLabel for="correo" value="Correo:"/>
+                    <h:inputText id="correo" value="#{clienteBean.cliente.correo}" required="true"
+                                 requiredMessage="El correo es obligatorio." maxlength="160"/>
+
+                    <h:outputLabel for="activo" value="Activo:"/>
+                    <h:selectBooleanCheckbox id="activo" value="#{clienteBean.cliente.activo}"/>
+                </h:panelGrid>
+
+                <div class="acciones-formulario">
+                    <h:commandButton value="Guardar" action="#{clienteBean.guardar}"/>
+                    <!-- immediate: Cancelar no valida ni actualiza el modelo -->
+                    <h:commandButton value="Cancelar" action="#{clienteBean.volverListado}"
+                                     immediate="true" styleClass="secundario"/>
+                </div>
+            </h:form>
+        </main>
+    </h:body>
+</html>
