@@ -1,0 +1,20 @@
+== Paso 34: tickets antes de reiniciar Tomcat
+Página 1 de 2 · 19 ticket(s)
+#21 #18 #1 
+== Paso 34: después de reiniciar Tomcat (nueva sesión)
+Página 1 de 2 · 19 ticket(s)
+#21 #18 #1 
+
+== MySQL detenido
+GET /tickets -> HTTP 503
+    No fue posible contar los tickets. Intente más tarde.
+POST guardar -> HTTP 503
+No fue posible listar clientes activos.
+-- ¿Trazas o SQL en las respuestas?: 0
+-- Log del servidor con MySQL detenido (diagnóstico técnico):
+17-Nov-2026 03:45:37.782 WARNING [http-nio-8080-exec-8] sv.edu.itca.servicedesk360.persistence.DiagnosticoBD.registrar [BD] No fue posible contar los tickets | SQLState=08S01 | codigo=0 | Communications link failure
+17-Nov-2026 03:45:37.799 WARNING [http-nio-8080-exec-9] sv.edu.itca.servicedesk360.persistence.DiagnosticoBD.registrar [BD] No fue posible consultar el cliente | SQLState=08S01 | codigo=0 | Communications link failure
+
+== Log de la prueba de rollback desde el navegador (seguimiento de 801 caracteres)
+17-Nov-2026 03:44:54.062 WARNING [http-nio-8080-exec-10] sv.edu.itca.servicedesk360.persistence.DiagnosticoBD.registrar [BD] Error registrando el seguimiento | SQLState=22001 | codigo=1406 | Data truncation: Data too long for colu
+17-Nov-2026 03:44:54.067 WARNING [http-nio-8080-exec-10] sv.edu.itca.servicedesk360.service.TicketService.registrarTicketConSeguimiento Registro de ticket revertido

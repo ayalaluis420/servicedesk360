@@ -16,7 +16,7 @@
             <div class="tarjetas-panel">
                 <section class="tarjeta-panel">
                     <h2>Solicitudes</h2>
-                    <p>Registra y consulta tickets de soporte.</p>
+                    <p>Registra tickets con su seguimiento inicial y consulta su historial.</p>
                     <a href="${pageContext.request.contextPath}/tickets">Gestionar tickets</a>
                 </section>
                 <section class="tarjeta-panel">
@@ -32,6 +32,7 @@
                 <section class="tarjeta-panel">
                     <h2>Equipos</h2>
                     <p>Registro y seguimiento de activos tecnológicos.</p>
+                    <a href="${pageContext.request.contextPath}/equipos">Gestionar equipos</a>
                 </section>
                 <section class="tarjeta-panel">
                     <h2>Reportes</h2>

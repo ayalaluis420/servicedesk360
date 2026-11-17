@@ -69,6 +69,22 @@ public class PersonalTecnicoDAOImpl implements PersonalTecnicoDAO {
     }
 
     @Override
+    public List<PersonalTecnico> listarActivos() {
+        String sql = COLUMNAS + "WHERE activo = TRUE ORDER BY nombre";
+        try (Connection cn = ConexionBD.obtenerConexion();
+                PreparedStatement ps = cn.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
+            List<PersonalTecnico> lista = new ArrayList<>();
+            while (rs.next()) {
+                lista.add(mapear(rs));
+            }
+            return lista;
+        } catch (SQLException ex) {
+            throw error("No fue posible listar los técnicos activos", ex);
+        }
+    }
+
+    @Override
     public Optional<PersonalTecnico> buscarPorId(long id) {
         String sql = COLUMNAS + "WHERE id_tecnico = ?";
         try (Connection cn = ConexionBD.obtenerConexion();

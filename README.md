@@ -224,6 +224,48 @@ el flujo HTTP no cambian.
 - Bitácora: `docs/bitacora_semana_06.docx`
 - Salidas y capturas: `docs/evidencias_guia06/`
 
+## Decisiones de diseño de la semana 7 (CRUD relacionado y transacciones)
+
+### Arquitectura del proceso de tickets
+`formulario.jsp → TicketServlet → TicketService → TicketDAO / SeguimientoDAO → MySQL → redirect → listado.jsp`
+
+| Capa | Clases | Responsabilidad |
+|---|---|---|
+| Dominio | `Ticket`, `Seguimiento`, `Categoria`, `Equipo` | Columnas propias de cada tabla |
+| DTO | `TicketDetalleDTO`, `EquipoDetalleDTO`, `ProductividadDTO` | Resultados de JOIN listos para la vista |
+| DAO | `TicketDAO`, `SeguimientoDAO`, `EquipoDAO`, `CategoriaDAO` (+ `listarActivos` de técnicos) | SQL parametrizado; los métodos de escritura reciben la `Connection` del servicio |
+| Servicio | `TicketService`, `ServiceException` | Reglas de negocio y transacción (commit/rollback) |
+| Controlador | `TicketServlet` (`/tickets`), `EquipoServlet` (`/equipos`) | HTTP, catálogos, PRG; sin SQL ni commit |
+
+El flujo de tickets en memoria de las Guías 4 y 5 (`DirectorioTicketsEnMemoria`, `ServicioTickets`,
+`/tickets/bd`) se retiró: ahora todo el proceso usa MySQL.
+
+### Transacciones
+- **Registrar ticket:** INSERT del ticket + INSERT del seguimiento inicial con una sola conexión. Un fallo en
+  cualquiera de los dos revierte ambos.
+- **Cambiar estado:** `UPDATE ... WHERE id_ticket = ? AND estado = ?` (control optimista) + seguimiento
+  automático. Si otra ventana cambió el estado antes, se informa y no se sobrescribe.
+- Transiciones permitidas: ABIERTO → ASIGNADO/EN_PROCESO → RESUELTO → CERRADO (CERRADO es final;
+  RESUELTO puede reabrirse a EN_PROCESO).
+
+### Reglas validadas en `TicketService`
+Cliente activo; el equipo pertenece al cliente (se valida aunque el formulario solo muestre sus equipos);
+categoría habilitada; técnico activo; prioridad CRITICA solo con técnico de nivel 3; título de 5 a 120
+caracteres; prioridad del catálogo (`CRITICA` sin tilde, como en MySQL); seguimiento inicial obligatorio.
+
+### Cómo reproducir
+1. En Workbench (root) ejecute `sql/05_ajustes_guia07.sql` (agrega `categorias.activo` e índices; se puede
+   ejecutar varias veces) y luego `sql/06_datos_tickets.sql` (una sola vez: 16 tickets de prueba).
+2. Ejecute `service/PruebasTickets.java` (Run File). Debe terminar con
+   `RESULTADO: todas las pruebas del proceso de tickets pasaron.`
+3. Ejecute la aplicación, inicie sesión y use **Gestionar tickets** y **Gestionar equipos** desde el panel.
+
+### Evidencias
+- Matriz de pruebas: `docs/matriz_pruebas_guia07.xlsx`
+- Bitácora e incidencias: `docs/bitacora_semana_07.docx`
+- Diagrama: `docs/diagrama_relacional_guia07.png`
+- Salidas y capturas: `docs/evidencias_guia07/`
+
 ## Equipo
 - Luis Ángel Ayala
 

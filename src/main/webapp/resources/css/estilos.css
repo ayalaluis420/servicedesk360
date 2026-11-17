@@ -255,3 +255,89 @@ body {
  font-weight: bold;
  cursor: pointer;
 }
+
+/* Guía 7: proceso de tickets y equipos */
+
+.contenedor-crud.ancho {
+ width: min(96%, 1200px);
+}
+
+.ancho-formulario {
+ width: min(92%, 680px);
+}
+
+.grupo-campo textarea {
+ width: 100%;
+ padding: 11px 12px;
+ border: 1px solid #b9b9b9;
+ border-radius: 8px;
+ font-family: inherit;
+}
+
+.fila-campos {
+ display: grid;
+ grid-template-columns: 1fr 1fr;
+ gap: 12px;
+}
+
+.nowrap {
+ white-space: nowrap;
+}
+
+.prioridad,
+.estado-ticket {
+ display: inline-block;
+ padding: 2px 8px;
+ border-radius: 10px;
+ font-size: 0.82em;
+ font-weight: bold;
+ background: #eeeeee;
+ color: #444444;
+}
+
+.prioridad.alta {
+ background: #fff1d6;
+ color: #8a5a00;
+}
+
+.prioridad.critica {
+ background: #fdecea;
+ color: #8a1f11;
+}
+
+.prioridad.baja {
+ background: #edf8ef;
+ color: #245c2c;
+}
+
+.paginacion {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ margin-top: 16px;
+}
+
+.paginacion .deshabilitado {
+ color: #aaaaaa;
+}
+
+.ficha {
+ display: grid;
+ grid-template-columns: 140px 1fr;
+ gap: 6px 14px;
+ margin: 16px 0 24px;
+}
+
+.ficha dt {
+ font-weight: bold;
+ color: #555555;
+}
+
+.ficha dd {
+ margin: 0;
+}
+
+h2 {
+ margin-top: 26px;
+ font-size: 1.15em;
+}

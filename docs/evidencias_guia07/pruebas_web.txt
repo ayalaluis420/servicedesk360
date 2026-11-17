@@ -1,0 +1,20 @@
+[PASA ] 9/12 listado con JOIN: 10 filas | Página 1 de 2 · 18 ticket(s)
+[PASA ] 12   página 2: 8 filas (estado=&prioridad=&pagina=2)
+[PASA ] 10   estado=ABIERTO -> 7 filas, todas ABIERTO
+[PASA ] 11   prioridad=CRITICA -> 2 filas
+[PASA ] 13   estado con comillas se ignora (no es del catálogo): Página 1 de 2 · 18 ticket(s)
+[PASA ] 1/2  clientes 2, categorías 4 (sin la retirada), técnicos 2
+[PASA ] 3    al elegir Ana se cargan solo sus equipos: Seleccione...EQ-0001 - Laptop Dell Latitude 5440EQ-0003 - Monitor LG 24MK430H
+[PASA ] 7    Ticket #21 registrado con su seguimiento inicial.
+[PASA ] E2   detalle del ticket #21 con 1 seguimiento inicial
+[PASA ] 4    POST con idEquipo de Carlos para Ana -> "El equipo seleccionado no pertenece al cliente."
+[PASA ] 5    título "Mal" -> "El título debe contener entre 5 y 120 caracteres."
+[PASA ] 6    prioridad URGENTE -> "Prioridad no válida."
+[PASA ] 8    No se registró el ticket: ocurrió un error y la operación fue revertida completa (no se guardaron datos parciales). | total 19 -> 19
+[PASA ] 14   El ticket fue modificado por otra operación (estado actual: EN_PROCESO). Recargue la pantalla e intente de nuevo.
+[PASA ] E3   CERRADO no ofrece transiciones; historial con 3 seguimientos
+[PASA ] E3b  POST CERRADO -> ABIERTO: "Transición no permitida: CERRADO → ABIERTO."
+[PASA ] E1   8 filas técnico/estado
+[PASA ] EQ1  Equipo EQ-0010 registrado correctamente.
+[PASA ] EQ2  No se puede eliminar: el equipo tiene 7 ticket(s) relacionado(s). Desactívelo para conservar el historial.
+[PASA ] EQ3  el equipo nuevo aparece en el formulario de tickets

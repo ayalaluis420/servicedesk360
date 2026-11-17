@@ -1,0 +1,26 @@
+[PASA ] 1    Carga de clientes activos                  | 2 cliente(s) activo(s) desde MySQL
+[PASA ] 2    Carga de categorías y técnicos             | 4 categoría(s) habilitada(s) (sin la retirada), 2 técnico(s) activo(s)
+[PASA ] 3    Equipo pertenece al cliente                | EQ-0001 pertenece a Ana y no a Carlos
+[PASA ] 4    Equipo de otro cliente                     | El equipo seleccionado no pertenece al cliente.
+[PASA ] 5    Título vacío o corto                       | El título debe contener entre 5 y 120 caracteres.
+[PASA ] 6    Prioridad no permitida                     | Prioridad no válida.
+[PASA ] 6b   Prioridad 'CRÍTICA' con tilde              | Prioridad no válida.
+[PASA ] 7    Registro válido (ticket + seguimiento)     | ticket #18 ABIERTO | tickets 17->18 | seguimientos 17->18
+[PASA ] 8    Fallo controlado -> rollback completo      | tickets 18->18 | seguimientos 18->18 | huérfanos 0 | No se registró el ticket: ocurrió un error y la operación fue revertida completa (no se guardaron datos parciales).
+[PASA ] 8b   MySQL rechaza el seguimiento -> rollback   | tickets 18->18 | huérfanos 0
+[PASA ] 9    JOIN de listado con datos descriptivos     | #18 | Ana López | EQ-0001 - Dell Latitude 5440 | Software | María Ruiz
+[PASA ] 10   Filtro por estado                          | 8 ticket(s), todos ABIERTO
+[PASA ] 11   Filtro por prioridad                       | 2 ticket(s), todos CRITICA
+[PASA ] 12   Paginación (LIMIT 10)                      | total 18 | página 1: 10 | página 2: 8
+[PASA ] 13   Consulta parametrizada                     | estado = "ABIERTO' OR '1'='1" -> 0 filas (se trata como valor)
+[PASA ] 14   Actualización con estado esperado          | El ticket fue modificado por otra operación (estado actual: EN_PROCESO). Recargue la pantalla e intente de nuevo.
+[PASA ] E3   CERRADO no vuelve a ABIERTO                | Transición no permitida: CERRADO → ABIERTO.
+[PASA ] E2   Historial del ticket                       | 3 seguimiento(s): registro inicial + 2 cambios de estado
+[PASA ] 15a  Cliente inexistente                        | El cliente no existe o está inactivo.
+[PASA ] 15b  Categoría deshabilitada                    | La categoría no existe o está deshabilitada.
+[PASA ] 15c  CRITICA con técnico de nivel 2             | Un ticket de prioridad CRITICA requiere un técnico de nivel 3.
+[PASA ] 15   Sin referencias huérfanas en la base       | tickets sin seguimiento = 0 | referencias rotas = 0
+[PASA ] E1   Productividad por técnico y estado         | María Ruiz / ABIERTO = 4 (primera fila, orden descendente)
+[PASA ] EQ   CRUD de equipos relacionado                | alta id 5 | código duplicado detectado | EQ-0001 tiene 6 ticket(s), no se elimina | equipo sin tickets eliminado
+
+RESULTADO: todas las pruebas del proceso de tickets pasaron.

@@ -1,0 +1,25 @@
+== Prueba 17: SQL o JDBC en Servlets y JSP
+Sin coincidencias: los Servlets y las JSP no tienen SQL, JDBC ni commit/rollback.
+
+== ¿El servicio contiene SQL?
+Sin coincidencias: TicketService solo coordina (commit/rollback) y valida.
+
+== Dónde se hace commit/rollback
+109:            cn.setAutoCommit(false);
+120:                cn.commit();          // único punto de confirmación
+123:                cn.rollback();
+129:                cn.setAutoCommit(true);
+223:            cn.setAutoCommit(false);
+226:                    cn.rollback();
+243:                cn.commit();
+245:                cn.rollback();
+248:                cn.setAutoCommit(true);
+
+== ¿Los DAO de escritura confirman por su cuenta?
+No: registrar(cn, ...) usa la conexión del servicio y no hace commit ni rollback.
+
+== ¿Los DAO o el servicio conocen HTTP?
+Sin coincidencias.
+
+== Secretos en el repositorio
+Sin claves reales (solo CAMBIAR_LOCALMENTE).

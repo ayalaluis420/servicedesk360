@@ -1,0 +1,14 @@
++-----------+---------------------------------+--------------+
+| id_ticket | titulo                          | seguimientos |
++-----------+---------------------------------+--------------+
+|        21 | No abre el sistema de planillas |            3 |
+|        18 | Error al ingresar al portal     |            3 |
+|        17 | Ruido en la impresora           |            1 |
+|        16 | Navegador lento                 |            1 |
+|        15 | Alta de usuario nuevo           |            1 |
+|        14 | Batería no carga                |            1 |
+|        13 | Impresora fuera de red          |            1 |
+|        12 | Permisos de carpeta             |            1 |
+|        11 | Sistema contable no abre        |            1 |
+|        10 | Actualización de drivers        |            1 |
++-----------+---------------------------------+--------------+

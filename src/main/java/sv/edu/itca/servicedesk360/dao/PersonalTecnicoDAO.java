@@ -13,6 +13,9 @@ public interface PersonalTecnicoDAO {
 
     List<PersonalTecnico> listar();
 
+    /** Guía 7: técnicos activos para el catálogo del formulario de tickets. */
+    List<PersonalTecnico> listarActivos();
+
     Optional<PersonalTecnico> buscarPorId(long id);
 
     boolean existeCorreo(String correo, Long excluirId);
