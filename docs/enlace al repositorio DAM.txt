@@ -26,3 +26,8 @@ Commit: b893933 - "Guia 5: evidencias del equipo local en la bitacora"
 Guía 6 (patrón DAO y CRUD de clientes):
 Rama: guia06-dao-crud-clientes
 Commit: 8e9f983 - "Guia 06 - DAO y CRUD de clientes"
+Commit: e102675 - "Guia 06: evidencias del equipo local en la bitacora"
+
+Guía 7 (CRUD relacionado, consultas de negocio y transacciones):
+Rama: guia07-crud-relacionado
+Commit: 939ae10 - "feat: crud relacionado tickets y transaccion seguimiento"
