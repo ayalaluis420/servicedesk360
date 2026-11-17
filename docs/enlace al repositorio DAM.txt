@@ -31,3 +31,7 @@ Commit: e102675 - "Guia 06: evidencias del equipo local en la bitacora"
 Guía 7 (CRUD relacionado, consultas de negocio y transacciones):
 Rama: guia07-crud-relacionado
 Commit: 939ae10 - "feat: crud relacionado tickets y transaccion seguimiento"
+
+Guía 8 (introducción a JSF y Managed Beans):
+Rama: guia08-jsf-managed-beans
+Commit: 98939fd - "feat: migracion inicial a jsf y managed beans"
