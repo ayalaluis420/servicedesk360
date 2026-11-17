@@ -1,5 +1,7 @@
 package sv.edu.itca.servicedesk360.model;
 
+import java.io.Serializable;
+
 /**
  * Guía 6: entidad Cliente del mantenimiento CRUD.
  *
@@ -7,7 +9,9 @@ package sv.edu.itca.servicedesk360.model;
  * El identificador es {@code null} hasta que MySQL lo genera
  * (AUTO_INCREMENT) al insertar.
  */
-public class Cliente {
+public class Cliente implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long idCliente;
     private String nombre;

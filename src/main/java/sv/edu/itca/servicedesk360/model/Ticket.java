@@ -1,5 +1,6 @@
 package sv.edu.itca.servicedesk360.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -7,7 +8,9 @@ import java.time.LocalDateTime;
  * tickets (ids de las entidades relacionadas, no sus nombres). Los datos
  * descriptivos para la pantalla viajan en {@link sv.edu.itca.servicedesk360.dto.TicketDetalleDTO}.
  */
-public class Ticket {
+public class Ticket implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long idTicket;
     private long idCliente;

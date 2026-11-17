@@ -1,0 +1,20 @@
+== Prueba 18: ¿SQL o JDBC en XHTML o en los beans?
+Sin coincidencias: ningún XHTML ni bean contiene SQL o JDBC.
+
+== Lo que usa cada bean (Service / DAO reutilizados)
+src/main/java/sv/edu/itca/servicedesk360/bean/TicketBean.java:60:    private transient TicketService ticketService;
+src/main/java/sv/edu/itca/servicedesk360/bean/TicketBean.java:61:    private transient EquipoService equipoService;
+src/main/java/sv/edu/itca/servicedesk360/bean/TicketBean.java:62:    private transient TicketDAO ticketDAO;
+src/main/java/sv/edu/itca/servicedesk360/bean/TicketBean.java:63:    private transient SeguimientoDAO seguimientoDAO;
+src/main/java/sv/edu/itca/servicedesk360/bean/TicketBean.java:64:    private transient ClienteDAO clienteDAO;
+src/main/java/sv/edu/itca/servicedesk360/bean/TicketBean.java:65:    private transient CategoriaDAO categoriaDAO;
+src/main/java/sv/edu/itca/servicedesk360/bean/TicketBean.java:66:    private transient PersonalTecnicoDAO tecnicoDAO;
+src/main/java/sv/edu/itca/servicedesk360/bean/EquipoBean.java:34:    private transient EquipoService equipoService;
+src/main/java/sv/edu/itca/servicedesk360/bean/EquipoBean.java:35:    private transient ClienteDAO clienteDAO;
+
+== Reglas de negocio validadas en el servicio, no en la vista
+184:                throw new ServiceException("El equipo seleccionado no pertenece al cliente.");
+228:                    throw new ServiceException("El ticket no existe o está CERRADO: no se puede editar.");
+285:                    throw new ServiceException("El ticket fue modificado por otra operación "
+
+== Espacios de nombres (sin mezclar javax.* y jakarta.*)

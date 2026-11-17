@@ -1,0 +1,22 @@
+== Prueba 17: antes de reiniciar Tomcat
+1-10 de 19
+EQ-0001 EQ-0002 EQ-0003 EQ-0004 EQ-0010 
+== Después de reiniciar Tomcat (nueva sesión)
+1-10 de 19
+EQ-0001 EQ-0002 EQ-0003 EQ-0004 EQ-0010 
+
+== MySQL
++-----------+---------------------------------+-----------+---------+
+| id_ticket | titulo                          | prioridad | estado  |
++-----------+---------------------------------+-----------+---------+
+|        21 | No abre el sistema de planillas | ALTA      | CERRADO |
+|        18 | Error al ingresar al portal     | MEDIA     | CERRADO |
+|        17 | Ruido en la impresora           | BAJA      | ABIERTO |
++-----------+---------------------------------+-----------+---------+
++-------------------+-----------+--------+
+| codigo_inventario | tipo      | activo |
++-------------------+-----------+--------+
+| EQ-0010           | Proyector |      1 |
+| EQ-0004           | Laptop    |      1 |
+| EQ-0003           | Monitor   |      1 |
++-------------------+-----------+--------+

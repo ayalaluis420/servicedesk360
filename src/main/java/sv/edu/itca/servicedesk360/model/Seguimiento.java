@@ -1,11 +1,14 @@
 package sv.edu.itca.servicedesk360.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  * Guía 7: entrada del historial de un ticket (tabla seguimientos).
  */
-public class Seguimiento {
+public class Seguimiento implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long idSeguimiento;
     private long idTicket;

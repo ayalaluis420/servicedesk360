@@ -411,3 +411,126 @@ ul.mensajes {
  background: #f3f3f3;
  cursor: pointer;
 }
+
+/* Guía 10: plantilla Facelets y PrimeFaces */
+
+.barra-superior {
+ display: flex;
+ align-items: center;
+ gap: 22px;
+ padding: 12px 24px;
+ background: var(--rojo-itca);
+ color: #ffffff;
+ flex-wrap: wrap;
+}
+
+.barra-superior .marca {
+ font-weight: bold;
+ font-size: 1.1em;
+}
+
+.barra-superior nav {
+ display: flex;
+ gap: 16px;
+ flex-wrap: wrap;
+ flex: 1;
+}
+
+.barra-superior a {
+ color: #ffffff;
+ text-decoration: none;
+}
+
+.barra-superior a:hover {
+ text-decoration: underline;
+}
+
+.barra-superior .usuario {
+ font-size: 0.9em;
+ opacity: 0.9;
+}
+
+.contenido-plantilla {
+ width: min(96%, 1250px);
+ margin: 24px auto;
+ background: #ffffff;
+ padding: 22px 26px;
+ border-radius: 12px;
+ box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.contenido-plantilla .contenedor-crud,
+.contenido-plantilla .contenedor-formulario,
+.contenido-plantilla .panel-usuario {
+ width: auto;
+ margin: 0;
+ box-shadow: none;
+ padding: 0;
+}
+
+.pie {
+ text-align: center;
+ color: #777777;
+ font-size: 0.85em;
+ padding: 10px 0 24px;
+}
+
+.cabecera-modulo {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ flex-wrap: wrap;
+ gap: 10px;
+}
+
+.filtros-externos {
+ display: flex;
+ gap: 8px;
+ align-items: center;
+ flex-wrap: wrap;
+}
+
+.barra-tickets {
+ margin: 12px 0;
+}
+
+.acciones-fila .ui-button {
+ margin-right: 4px;
+}
+
+.panel-detalle {
+ margin-top: 18px;
+}
+
+.ficha span.dt {
+ font-weight: bold;
+ color: #555555;
+}
+
+.panel-detalle .ficha,
+.ui-dialog .ficha {
+ display: grid;
+ grid-template-columns: 120px 1fr;
+ gap: 6px 14px;
+ margin: 8px 0 14px;
+}
+
+.lista-seguimientos {
+ margin: 0;
+ padding-left: 18px;
+}
+
+.lista-seguimientos li {
+ margin-bottom: 4px;
+}
+
+.dialogo-carga .ui-dialog-content {
+ display: flex;
+ align-items: center;
+ gap: 12px;
+ padding: 18px 26px;
+}
+
+.form-dialogo .ui-message {
+ margin: 2px 0 0;
+}

@@ -1,5 +1,7 @@
 package sv.edu.itca.servicedesk360.model;
 
+import java.io.Serializable;
+
 /**
  * Guía 6, adaptación a una entidad propia del proyecto: ficha del
  * personal técnico que se administra en el catálogo (tabla tecnicos).
@@ -9,7 +11,9 @@ package sv.edu.itca.servicedesk360.model;
  * positivo desde su construcción. Esta entidad, en cambio, tiene id
  * {@code null} hasta que MySQL lo genera.
  */
-public class PersonalTecnico {
+public class PersonalTecnico implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long idTecnico;
     private String nombre;

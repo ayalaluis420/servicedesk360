@@ -1,9 +1,13 @@
 package sv.edu.itca.servicedesk360.dto;
 
+import java.io.Serializable;
+
 /**
  * Guía 7: fila del listado de equipos con el nombre del cliente (JOIN).
  */
-public class EquipoDetalleDTO {
+public class EquipoDetalleDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private long idEquipo;
     private String codigoInventario;

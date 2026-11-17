@@ -1,0 +1,62 @@
+== Guía 6: CRUD de clientes con Servlet (navegador)
+[PASA ] V02  /clientes muestra 2 cliente(s) desde MySQL
+[PASA ] V03  POST -> 303 (PRG) | Cliente registrado correctamente.
+[PASA ] V13  filas antes/después del refresh: 3/3; el refresh repite solo el GET
+[PASA ] V04  servidor responde con error de validación; filas 3 -> 3
+[PASA ] V05  formulario muestra: El correo ya está registrado.
+[PASA ] V06  id 3 se conserva; filas 3 -> 3; Cliente actualizado correctamente.
+[PASA ] V07  id=999999 y id=abc -> redirección a la lista con "Cliente no encontrado." (sin traza)
+[PASA ] GET  GET /clientes?accion=eliminar no elimina (filas 3 -> 3)
+[PASA ] V08  Cliente eliminado.
+[PASA ] V09  No se puede eliminar: el cliente tiene 2 registro(s) relacionado(s) (equipos o tickets). Desactívelo para conservar su historial.
+[PASA ] V10  Cliente desactivado. Estado: Inactivo
+[PASA ] E2   filtro "Solo activos" oculta al cliente inactivo (2 fila(s))
+[PASA ] V11  Cliente activado.
+[PASA ] V12  "Sean O'Connor" guardado y mostrado
+[PASA ] E1   buscar "connor" -> 1 fila(s)
+[PASA ] T1   Técnico registrado correctamente.
+[PASA ] T6   No se puede eliminar: el técnico tiene 1 ticket(s) asignado(s). Desactívelo para conservar el historial.
+== Guía 6: PruebasDAO
+RESULTADO: todas las pruebas DAO pasaron.
+== Guía 7: PruebasTickets (servicio)
+RESULTADO: todas las pruebas del proceso de tickets pasaron.
+== Guía 7: tickets y equipos con Servlet (navegador)
+[PASA ] 9/12 listado con JOIN: 10 filas | Página 1 de 2 · 18 ticket(s)
+[PASA ] 12   página 2: 8 filas (estado=&prioridad=&pagina=2)
+[PASA ] 10   estado=ABIERTO -> 7 filas, todas ABIERTO
+[PASA ] 11   prioridad=CRITICA -> 2 filas
+[PASA ] 13   estado con comillas se ignora (no es del catálogo): Página 1 de 2 · 18 ticket(s)
+[PASA ] 1/2  clientes 4, categorías 4 (sin la retirada), técnicos 3
+[PASA ] 3    al elegir Ana se cargan solo sus equipos: Seleccione...EQ-0001 - Laptop Dell Latitude 5440EQ-0003 - Monitor LG 24MK430H
+[PASA ] 7    Ticket #21 registrado con su seguimiento inicial.
+[PASA ] E2   detalle del ticket #21 con 1 seguimiento inicial
+[PASA ] 4    POST con idEquipo de Carlos para Ana -> "El equipo seleccionado no pertenece al cliente."
+[PASA ] 5    título "Mal" -> "El título debe contener entre 5 y 120 caracteres."
+[PASA ] 6    prioridad URGENTE -> "Prioridad no válida."
+[PASA ] 8    No se registró el ticket: ocurrió un error y la operación fue revertida completa (no se guardaron datos parciales). | total 19 -> 19
+[PASA ] 14   El ticket fue modificado por otra operación (estado actual: EN_PROCESO). Recargue la pantalla e intente de nuevo.
+[PASA ] E3   CERRADO no ofrece transiciones; historial con 3 seguimientos
+[PASA ] E3b  POST CERRADO -> ABIERTO: "Transición no permitida: CERRADO → ABIERTO."
+[PASA ] E1   8 filas técnico/estado
+[PASA ] EQ1  Equipo EQ-0010 registrado correctamente.
+[PASA ] EQ2  No se puede eliminar: el equipo tiene 7 ticket(s) relacionado(s). Desactívelo para conservar el historial.
+[PASA ] EQ3  el equipo nuevo aparece en el formulario de tickets
+== Guía 8: clientes JSF (navegador, ahora con plantilla Facelets)
+[PASA ] 1    FacesServlet procesa /app/inicio.xhtml (HTML generado, no el XHTML crudo)
+[PASA ] E3   sesionBean (@SessionScoped) muestra el usuario autenticado
+[PASA ] E4   outcome "clientes" (regla en faces-config.xml) -> /app/clientes/lista.xhtml
+[PASA ] 3/4  @PostConstruct cargó 4 clientes reales de MySQL en h:dataTable
+[PASA ] 10   irNuevo() -> outcome implícito "formulario?faces-redirect=true" -> /app/clientes/formulario.xhtml
+[PASA ] 14   campos vacíos -> "El nombre es obligatorio.  | 	El correo es obligatorio." (falla Process Validations; guardar() no se ejecuta)
+[PASA ] 5/6  inputs -> bean -> MySQL: "Cliente registrado correctamente." | filas 4 -> 5
+[PASA ] 9    el FacesMessage sobrevive al redirect (Flash.setKeepMessages)
+[PASA ] 11   POST -> 302 redirect -> GET lista.xhtml
+[PASA ] 11b  refresh tras guardar: filas 5 -> 5 (no se duplica)
+[PASA ] 35   correo duplicado -> "El correo ya está registrado." (ClienteService)
+[PASA ] 7a   editar(c) -> /app/clientes/formulario.xhtml?id=9; f:viewAction cargó "Valeria Campos"
+[PASA ] 7    "Cliente actualizado correctamente." | id 9 se conserva | filas 5 -> 5
+[PASA ] ID   ?id=999999 -> lista.xhtml con "Cliente no encontrado."
+[PASA ] 8    "Cliente desactivado." | Activo: No (el registro permanece)
+[PASA ] 8b   Cliente activado.
+[PASA ] IMM  Cancelar (immediate="true") vuelve sin validar campos vacíos
+[PASA ] CMP  /clientes (Servlet + JSP) muestra el mismo registro guardado desde JSF

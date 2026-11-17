@@ -1,10 +1,14 @@
 package sv.edu.itca.servicedesk360.model;
 
+import java.io.Serializable;
+
 /**
  * Guía 7: categoría de ticket. Solo las habilitadas (activo) se ofrecen
  * en el formulario.
  */
-public class Categoria {
+public class Categoria implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long idCategoria;
     private String nombre;

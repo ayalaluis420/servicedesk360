@@ -50,6 +50,15 @@
             <artifactId>weld-servlet-shaded</artifactId>
             <version>3.1.9.Final</version>
         </dependency>
+
+        <!-- Guía 10: PrimeFaces. La versión 14 es compatible con JSF 2.3 (javax.*);
+             el artefacto sin clasificador es el de javax (el de jakarta usa
+             <classifier>jakarta</classifier>, que aquí NO se usa). -->
+        <dependency>
+            <groupId>org.primefaces</groupId>
+            <artifactId>primefaces</artifactId>
+            <version>14.0.12</version>
+        </dependency>
     </dependencies>
     
     <build>

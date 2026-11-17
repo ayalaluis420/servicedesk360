@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<!-- Plantilla Facelets (base de la Guía 9, usada por la Guía 10).
+     Las vistas JSF la usan con ui:composition y definen "titulo" y "contenido".
+     Está en WEB-INF porque nunca se pide directamente desde el navegador. -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title><ui:insert name="titulo">ServiceDesk 360</ui:insert> | ServiceDesk 360</title>
+        <link rel="stylesheet" href="#{request.contextPath}/resources/css/estilos.css"/>
+    </h:head>
+    <h:body>
+        <header class="barra-superior">
+            <span class="marca">ServiceDesk 360</span>
+            <nav>
+                <a href="#{request.contextPath}/app/inicio.xhtml">Inicio JSF</a>
+                <a href="#{request.contextPath}/app/tickets/lista.xhtml">Tickets</a>
+                <a href="#{request.contextPath}/app/equipos/lista.xhtml">Equipos</a>
+                <a href="#{request.contextPath}/app/clientes/lista.xhtml">Clientes</a>
+                <a href="#{request.contextPath}/panel">Panel</a>
+            </nav>
+            <span class="usuario">#{sesionBean.nombre}</span>
+        </header>
+
+        <!-- Guía 10, Parte H: indicador global de carga para peticiones AJAX -->
+        <p:ajaxStatus onstart="PF('statusDlg').show()"
+                      onsuccess="PF('statusDlg').hide()"
+                      onerror="PF('statusDlg').hide()"/>
+        <p:dialog widgetVar="statusDlg" modal="true" draggable="false" closable="false"
+                  resizable="false" showHeader="false" styleClass="dialogo-carga">
+            <i class="pi pi-spin pi-spinner" style="font-size:2rem"></i>
+            <span>Procesando...</span>
+        </p:dialog>
+
+        <main class="contenido-plantilla">
+            <ui:insert name="contenido"/>
+        </main>
+
+        <footer class="pie">ServiceDesk 360 · Desarrollo de Aplicaciones Multiplataforma · ITCA-FEPADE</footer>
+    </h:body>
+</html>

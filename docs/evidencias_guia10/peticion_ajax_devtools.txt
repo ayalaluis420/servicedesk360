@@ -1,0 +1,27 @@
+== Petición AJAX parcial capturada al cambiar el filtro de estado (equivale a la pestaña Network de DevTools)
+URL: POST /servicedesk360/app/tickets/lista.xhtml
+Cabecera Faces-Request: partial/ajax
+Cabecera Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+
+Parámetros enviados:
+  javax.faces.partial.ajax = true
+  javax.faces.source = frmTickets:filtroEstado
+  javax.faces.partial.execute (process) = frmTickets:filtroEstado
+  javax.faces.partial.render (update) = frmTickets:tablaTickets frmTickets:contadorAbiertos
+  javax.faces.behavior.event = valueChange
+  frmTickets:filtroEstado_input = ABIERTO
+
+Respuesta: HTTP 200 text/xml;charset=UTF-8
+Tamaño de la respuesta: 33618 bytes
+Componentes actualizados (<update id=...>): frmTickets:contadorAbiertos, frmTickets:tablaTickets, j_id1:javax.faces.ViewState:0
+
+Inicio de la respuesta:
+<?xml version='1.0' encoding='UTF-8'?>
+<partial-response><changes><update id="frmTickets:contadorAbiertos"><![CDATA[<div id="frmTickets:contadorAbiertos" class="ui-outputpanel ui-widget"><span id="frmTickets:j_idt17" class="ui-tag ui-widget ui-tag-info"><span class="ui-tag-icon pi pi-inbox"></span><...
+
+== Ejercicio 20: recarga completa vs petición AJAX parcial
+Medido con la API Performance del navegador (la misma fuente que la pestaña Network de DevTools), caché desactivada, promedio de 3 mediciones.
+Recarga completa de /app/tickets/lista.xhtml: 13 recursos (HTML, CSS, JavaScript de PrimeFaces y fuentes), 1345545 bytes transferidos, 158 ms hasta el evento load.
+Petición AJAX del filtro de estado: 1 petición, 33889 bytes transferidos, 54 ms.
+La petición parcial transfiere cerca del 2.5 % de los bytes de la recarga completa y no vuelve a descargar CSS ni JavaScript; además conserva el estado de la vista (filtros, página, diálogos) sin parpadeo.
+Mediciones individuales: [{"fullMs": 195, "fullBytes": 1345546, "recursos": 13, "ajaxMs": 60, "ajaxBytes": 33889}, {"fullMs": 150, "fullBytes": 1345546, "recursos": 13, "ajaxMs": 47, "ajaxBytes": 33889}, {"fullMs": 129, "fullBytes": 1345543, "recursos": 13, "ajaxMs": 56, "ajaxBytes": 33888}]

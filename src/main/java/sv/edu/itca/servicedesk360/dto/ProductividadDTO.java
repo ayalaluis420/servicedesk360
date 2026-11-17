@@ -1,9 +1,13 @@
 package sv.edu.itca.servicedesk360.dto;
 
+import java.io.Serializable;
+
 /**
  * Guía 7, Ejercicio 1: cantidad de tickets por técnico y estado.
  */
-public class ProductividadDTO {
+public class ProductividadDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String tecnico;
     private String estado;

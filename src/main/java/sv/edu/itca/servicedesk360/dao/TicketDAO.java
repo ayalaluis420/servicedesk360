@@ -42,6 +42,16 @@ public interface TicketDAO {
     boolean actualizarEstado(Connection cn, long idTicket,
             String estadoEsperado, String nuevoEstado);
 
+    /** Guía 10: ticket como entidad (ids) para cargar el diálogo de edición. */
+    Optional<Ticket> buscarPorId(long idTicket);
+
+    /**
+     * Guía 10: actualiza los datos editables del ticket dentro de la
+     * transacción del servicio. No modifica tickets CERRADO; devuelve false
+     * si el ticket no existe o ya está cerrado.
+     */
+    boolean actualizar(Connection cn, Ticket ticket);
+
     /** Ejercicio 1: tickets por técnico y estado, de mayor a menor. */
     List<ProductividadDTO> productividadPorTecnico();
 }

@@ -1,9 +1,13 @@
 package sv.edu.itca.servicedesk360.model;
 
+import java.io.Serializable;
+
 /**
  * Guía 7: equipo tecnológico de un cliente (tabla equipos).
  */
-public class Equipo {
+public class Equipo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long idEquipo;
     private long idCliente;

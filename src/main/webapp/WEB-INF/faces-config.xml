@@ -4,6 +4,14 @@
               xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_3.xsd"
               version="2.3">
 
+    <!-- Guía 10: mensajes estándar de JSF en español -->
+    <application>
+        <message-bundle>sv.edu.itca.servicedesk360.mensajes</message-bundle>
+        <locale-config>
+            <default-locale>es</default-locale>
+        </locale-config>
+    </application>
+
     <!-- Parte I: registra las fases del ciclo de vida (si LOG_CICLO_VIDA = true). -->
     <lifecycle>
         <phase-listener>sv.edu.itca.servicedesk360.jsf.CicloVidaListener</phase-listener>
@@ -16,6 +24,11 @@
         <navigation-case>
             <from-outcome>clientes</from-outcome>
             <to-view-id>/app/clientes/lista.xhtml</to-view-id>
+            <redirect />
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>equipos</from-outcome>
+            <to-view-id>/app/equipos/lista.xhtml</to-view-id>
             <redirect />
         </navigation-case>
         <navigation-case>

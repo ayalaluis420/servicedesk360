@@ -1,0 +1,30 @@
+[PASA ] 1    PrimeFaces 14.0.12 carga: p:dataTable, p:toolbar, p:tag y widgets PF() disponibles
+[PASA ] 2    tabla con 10 filas y datos descriptivos (1-10 de 17)
+[PASA ] 3    página 2 por AJAX: 11-17 de 17
+[PASA ] 4    orden por Título ascendente: "Actualización de drivers", "Alta de usuario nuevo", "Batería no carga"...
+[PASA ] 5    filtro de columna "Carlos": 9 fila(s), todas de Carlos Méndez
+[PASA ] 6    estado=ABIERTO por AJAX: 7 fila(s); la página no se recargó
+[PASA ] 7    p:dialog "Nuevo ticket" abierto sin recargar la página
+[PASA ] 8    al elegir Ana se cargan por AJAX solo sus equipos: Seleccione... EQ-0001 - Laptop Dell EQ-0003 - Monitor LG
+[PASA ] 9    título "Mal" → "El título debe tener entre 5 y 120 caracteres." (Process Validations); el diálogo sigue abierto y no se guarda
+[PASA ] 10a  equipo inyectado con DevTools → JSF (UISelectOne): "Equipo: la opción enviada no pertenece a la lista mostrada (valor no válido)."; no llega al servicio
+[PASA ] 10   cliente Carlos + equipo EQ-0001 (de Ana) → TicketService: "No fue posible guardarEl equipo seleccionado no pertenece al cliente."; el diálogo sigue abierto (validationFailed)
+[PASA ] 11   guardado: diálogo cerrado, tabla actualizada (1-10 de 17 → 1-10 de 18)
+[PASA ] 12   p:messages: "Ticket registradoTicket #18 registrado con su seguimiento inicial."
+[PASA ] CNV  convertidor textoNormalizado: "  Proyector   sin   señal " se guardó como "Proyector sin señal"
+[PASA ] P24  rowSelect → panelDetalle del ticket #18 con su seguimiento inicial
+[PASA ] 13   editar carga "Proyector sin señal" y actualiza la fila: "Ticket actualizadoTicket #18 actualizado."
+[PASA ] 14   p:confirm "Sí" → #18 ABIERTO → EN_PROCESO; Estado actualizadoTicket #18: ABIERTO → EN_PROCESO.
+[PASA ] E19  contador actualizado por AJAX: "8 ticket(s) ABIERTO" → "7 ticket(s) ABIERTO"
+[PASA ] 15   ventana 2 con estado viejo (EN_PROCESO): "No se cambió el estadoEl ticket fue modificado por otra operación (estado actual: RESUELTO). Recargue la pantalla e intente de nuevo."
+[PASA ] 16   p:ajaxStatus: "Procesando..." visible durante la petición (true) y oculto al terminar (true)
+[PASA ] 35   error de negocio (editar un CERRADO): "No se puede editarEl ticket #10 está CERRADO."; no se abre el diálogo, la tabla y los filtros se conservan y el indicador no queda bloqueado
+[PASA ] E17  Limpiar filtros: 4 fila(s) filtradas → filtros vacíos y 1-10 de 18
+[PASA ] E18  diálogo de solo lectura con datos y los 4 seguimientos (registro, edición, 2 cambios de estado)
+[PASA ] E22  Guardar con process="@this": los campos no se procesan, el bean no recibe los valores y el servicio responde "No fue posible guardarSeleccione un equipo."
+[PASA ] 17   recarga completa: el ticket #18 sigue en la tabla (MySQL)
+[PASA ] EQ1  inventario con p:dataTable: 4 equipos
+[PASA ] EQ2  validador por AJAX al salir del campo: "abc" → "Use el formato LETRAS-CÓDIGO, por ejemplo EQ-0010."
+[PASA ] EQ3  convertidor de mayúsculas "eq-0020" → "EQ-0020"; "Equipo registradoEQ-0020"
+[PASA ] EQ4  eliminar EQ-0001 (con tickets): "No se eliminóNo se puede eliminar: el equipo tiene 6 ticket(s) relacionado(s). Desactívelo para conservar el historial."
+[PASA ] EQ5  toggle "Solo activos" filtra por AJAX

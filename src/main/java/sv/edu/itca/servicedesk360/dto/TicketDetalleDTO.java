@@ -1,5 +1,6 @@
 package sv.edu.itca.servicedesk360.dto;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -8,7 +9,9 @@ import java.time.LocalDateTime;
  * persistente y no ejecuta SQL: solo transporta valores listos para la
  * vista.
  */
-public class TicketDetalleDTO {
+public class TicketDetalleDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private long idTicket;
     private String cliente;

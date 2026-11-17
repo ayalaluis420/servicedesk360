@@ -7,6 +7,7 @@ Caso modelo de una aplicación web para gestionar solicitudes de soporte técnic
 - Java 11 o superior
 - JSP, Servlets, EL y JSTL 1.2
 - JSF 2.3 (Mojarra 2.3.21) y CDI (Weld 3.1.9) desde la semana 8 (espacio de nombres javax.*)
+- PrimeFaces 14.0.12 y AJAX desde la semana 12 (Guía 10)
 - Apache Tomcat 9 (javax.servlet)
 - Apache NetBeans
 - Maven
@@ -311,6 +312,40 @@ Servlet siguen disponibles para comparar (paso 23).
 - Lista de cotejo: `docs/matriz_pruebas_guia08.xlsx`
 - Bitácora, ciclo de vida y comparación: `docs/bitacora_semana_08.docx`
 - Salidas y capturas: `docs/evidencias_guia08/`
+
+## Decisiones de diseño de la Guía 10 (PrimeFaces y AJAX, semana 12)
+
+### Qué cambió
+| Elemento | Descripción |
+|---|---|
+| `WEB-INF/templates/plantilla.xhtml` | Plantilla Facelets (base de la Guía 9) con menú, `p:ajaxStatus` y diálogo "Procesando..." |
+| `app/tickets/lista.xhtml` + `TicketBean` | `p:dataTable` (paginación, orden, filtros de columna, selección), filtros externos por AJAX, diálogo de registro/edición, cliente → equipos con `p:ajax`, cambio de estado con `p:confirm`, panel y diálogo de detalle, contador de abiertos |
+| `app/equipos/lista.xhtml` + `EquipoBean` | Aplicación al proyecto: inventario de equipos con PrimeFaces |
+| `jsf/TextoNormalizadoConverter`, `MayusculasConverter`, `CodigoInventarioValidator` | Convertidores y validador usados en los diálogos |
+| `TicketService.actualizarTicket` + `TicketDAO.actualizar` | Edición de tickets con las mismas reglas del registro, en transacción con un seguimiento (un ticket CERRADO no se edita) |
+| `EquipoService` | Reglas de equipos (usadas por `EquipoServlet` y `EquipoBean`) |
+| `mensajes.properties` | Mensajes estándar de JSF en español |
+
+### Decisiones
+- **PrimeFaces 14.0.12 (javax):** compatible con JSF 2.3 en Tomcat 9; no se usa el clasificador `jakarta`.
+- **No actualizar el `p:dialog`:** el botón Guardar actualiza un panel interno (`contenidoDialogo`); re-renderizar
+  el diálogo lo cerraría aunque haya errores. Los errores de negocio llaman `validationFailed()` para que el
+  diálogo siga abierto.
+- **Ids absolutos en botones de fila:** la tabla es un *naming container*; un `update="mensajes"` relativo se buscaría
+  dentro de ella y se ignoraría en silencio.
+- **process mínimo:** `@this` para eventos que solo necesitan un valor (cliente, filtros, acciones de fila) y
+  `@form` para Guardar.
+- **Filtrado:** estado y prioridad se filtran en MySQL; los filtros de columna y la paginación trabajan en memoria
+  (máximo 500 tickets). Para volúmenes grandes se usaría `LazyDataModel`.
+
+### Cómo probar
+1. Clean and Build y Run (la primera vez Maven descarga PrimeFaces).
+2. Inicie sesión → panel → **Versión JSF** → **Gestionar tickets** o **Gestionar equipos**
+   (`/servicedesk360/app/tickets/lista.xhtml`). Si los estilos no cambian, recargue con Ctrl+F5.
+
+### Evidencias
+- Matriz: `docs/matriz_pruebas_guia10.xlsx` · Bitácora: `docs/bitacora_semana_10.docx`
+- Salidas, petición AJAX observada y capturas: `docs/evidencias_guia10/`
 
 ## Equipo
 - Luis Ángel Ayala

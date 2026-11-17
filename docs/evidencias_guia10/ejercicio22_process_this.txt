@@ -1,0 +1,3 @@
+Guardar invocado con process="frmDialogo:btnGuardar" (@this) y todos los campos llenos en pantalla.
+Resultado: No fue posible guardarSeleccione un equipo.
+Con process="@form" (configuración real) el mismo formulario se guarda correctamente (prueba 11).

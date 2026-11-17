@@ -1,0 +1,148 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templates/plantilla.xhtml">
+    <!-- Guía 10, sección XIII: aplicación al proyecto. Inventario de equipos con
+         p:dataTable, filtro externo AJAX, diálogo con convertidor/validador y
+         cambio de estado con confirmación. -->
+
+    <ui:define name="titulo">Equipos</ui:define>
+
+    <ui:define name="contenido">
+        <h:form id="frmEquipos">
+            <div class="cabecera-modulo">
+                <h1>Inventario de equipos <span class="etiqueta-jsf">PrimeFaces</span></h1>
+                <p:outputPanel id="resumen">
+                    <p:tag value="#{equipoBean.activos} activo(s) de #{equipoBean.total}" severity="success" icon="pi pi-desktop"/>
+                </p:outputPanel>
+            </div>
+
+            <p:messages id="mensajes" showDetail="true" closable="true"/>
+
+            <p:toolbar>
+                <p:toolbarGroup>
+                    <p:commandButton value="Nuevo equipo" icon="pi pi-plus" actionListener="#{equipoBean.prepararNuevo}"
+                                     process="@this" update=":frmEquipo" oncomplete="PF('dlgEquipo').show()">
+                        <p:resetInput target=":frmEquipo"/>
+                    </p:commandButton>
+                </p:toolbarGroup>
+                <p:toolbarGroup align="right">
+                    <p:outputLabel for="soloActivos" value="Solo activos" style="margin-right:.5rem"/>
+                    <p:toggleSwitch id="soloActivos" value="#{equipoBean.soloActivos}">
+                        <p:ajax listener="#{equipoBean.aplicarFiltro}" process="@this" update="tablaEquipos"/>
+                    </p:toggleSwitch>
+                </p:toolbarGroup>
+            </p:toolbar>
+
+            <p:dataTable id="tablaEquipos" widgetVar="tablaEquipos" value="#{equipoBean.equipos}" var="e"
+                         filteredValue="#{equipoBean.equiposFiltrados}"
+                         paginator="true" rows="8" rowKey="#{e.idEquipo}"
+                         emptyMessage="No hay equipos." sortBy="#{e.codigoInventario}">
+                <p:column headerText="Código" sortBy="#{e.codigoInventario}" filterBy="#{e.codigoInventario}" filterMatchMode="contains">
+                    #{e.codigoInventario}
+                </p:column>
+                <p:column headerText="Tipo" sortBy="#{e.tipo}" filterBy="#{e.tipo}" filterMatchMode="contains">#{e.tipo}</p:column>
+                <p:column headerText="Marca / modelo">#{e.marca} #{e.modelo}</p:column>
+                <p:column headerText="Cliente" sortBy="#{e.cliente}" filterBy="#{e.cliente}" filterMatchMode="contains">#{e.cliente}</p:column>
+                <p:column headerText="Tickets" sortBy="#{e.tickets}" style="width:6rem">#{e.tickets}</p:column>
+                <p:column headerText="Estado" sortBy="#{e.activo}" style="width:7rem">
+                    <p:tag value="#{e.activo ? 'Activo' : 'Inactivo'}" severity="#{e.activo ? 'success' : 'secondary'}"/>
+                </p:column>
+                <p:column headerText="Acciones" style="width:11rem" styleClass="acciones-fila">
+                    <p:commandButton icon="pi pi-pencil" title="Editar" styleClass="rounded-button ui-button-outlined"
+                                     actionListener="#{equipoBean.prepararEdicion(e)}" process="@this"
+                                     update=":frmEquipo" oncomplete="PF('dlgEquipo').show()">
+                        <p:resetInput target=":frmEquipo"/>
+                    </p:commandButton>
+                    <p:commandButton icon="#{e.activo ? 'pi pi-ban' : 'pi pi-check-circle'}"
+                                     title="#{e.activo ? 'Desactivar' : 'Activar'}"
+                                     styleClass="rounded-button ui-button-secondary"
+                                     action="#{equipoBean.cambiarEstado(e)}" process="@this"
+                                     update=":frmEquipos:tablaEquipos :frmEquipos:mensajes :frmEquipos:resumen">
+                        <p:confirm header="Confirmación"
+                                   message="¿#{e.activo ? 'Desactivar' : 'Activar'} el equipo #{e.codigoInventario}?"
+                                   icon="pi pi-exclamation-triangle"/>
+                    </p:commandButton>
+                    <p:commandButton icon="pi pi-trash" title="Eliminar" styleClass="rounded-button ui-button-danger"
+                                     action="#{equipoBean.eliminar(e)}" process="@this"
+                                     update=":frmEquipos:tablaEquipos :frmEquipos:mensajes :frmEquipos:resumen">
+                        <p:confirm header="Eliminar equipo"
+                                   message="¿Eliminar definitivamente #{e.codigoInventario}? Solo es posible si no tiene tickets."
+                                   icon="pi pi-exclamation-triangle"/>
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" width="380">
+            <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check"/>
+            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-secondary" icon="pi pi-times"/>
+        </p:confirmDialog>
+
+        <h:form id="frmEquipo">
+            <p:dialog id="dlgEquipo" widgetVar="dlgEquipo" modal="true" responsive="true" width="560" fitViewport="true"
+                      header="#{equipoBean.edicion ? 'Editar equipo' : 'Nuevo equipo'}">
+                <!-- Se actualiza este panel y NO el p:dialog: re-renderizar el diálogo lo cierra -->
+                <p:outputPanel id="contenidoDialogo">
+                <p:messages globalOnly="true" showDetail="true" closable="true"/>
+                <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank form-dialogo"
+                             columnClasses="ui-g-12 ui-md-4, ui-g-12 ui-md-8">
+                    <p:outputLabel for="cliente" value="Cliente"/>
+                    <h:panelGroup>
+                        <p:selectOneMenu id="cliente" value="#{equipoBean.equipo.idCliente}" required="true"
+                                         requiredMessage="Seleccione un cliente." style="width:100%">
+                            <f:selectItem itemLabel="Seleccione..." itemValue="#{null}" noSelectionOption="true"/>
+                            <f:selectItems value="#{equipoBean.clientes}" var="c" itemValue="#{c.idCliente}"
+                                           itemLabel="#{c.nombre}#{c.activo ? '' : ' (inactivo)'}"/>
+                        </p:selectOneMenu>
+                        <p:message for="cliente" display="text"/>
+                    </h:panelGroup>
+
+                    <!-- Convertidor de mayúsculas + validador de formato (base de la Guía 9) -->
+                    <p:outputLabel for="codigo" value="Código de inventario"/>
+                    <h:panelGroup>
+                        <p:inputText id="codigo" value="#{equipoBean.equipo.codigoInventario}" required="true"
+                                     requiredMessage="El código es obligatorio." placeholder="EQ-0010" style="width:100%">
+                            <f:converter converterId="mayusculas"/>
+                            <f:validator validatorId="codigoInventario"/>
+                            <!-- AJAX al salir del campo: muestra el valor convertido y el error de formato -->
+                            <p:ajax event="blur" process="@this" update="@this msgCodigo"/>
+                        </p:inputText>
+                        <p:message id="msgCodigo" for="codigo" display="text"/>
+                    </h:panelGroup>
+
+                    <p:outputLabel for="tipo" value="Tipo"/>
+                    <h:panelGroup>
+                        <p:inputText id="tipo" value="#{equipoBean.equipo.tipo}" required="true"
+                                     requiredMessage="El tipo es obligatorio." style="width:100%"
+                                     validatorMessage="El tipo debe tener entre 2 y 80 caracteres.">
+                            <f:converter converterId="textoNormalizado"/>
+                            <f:validateLength minimum="2" maximum="80"/>
+                        </p:inputText>
+                        <p:message for="tipo" display="text"/>
+                    </h:panelGroup>
+
+                    <p:outputLabel for="marca" value="Marca"/>
+                    <p:inputText id="marca" value="#{equipoBean.equipo.marca}" maxlength="80" style="width:100%">
+                        <f:converter converterId="textoNormalizado"/>
+                    </p:inputText>
+
+                    <p:outputLabel for="modelo" value="Modelo"/>
+                    <p:inputText id="modelo" value="#{equipoBean.equipo.modelo}" maxlength="80" style="width:100%">
+                        <f:converter converterId="textoNormalizado"/>
+                    </p:inputText>
+                </p:panelGrid>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <p:commandButton value="Guardar" icon="pi pi-save" action="#{equipoBean.guardar}" process="@form"
+                                     update="contenidoDialogo :frmEquipos:tablaEquipos :frmEquipos:mensajes :frmEquipos:resumen"
+                                     oncomplete="if (!args.validationFailed) PF('dlgEquipo').hide();"/>
+                    <p:commandButton value="Cancelar" icon="pi pi-times" type="button" styleClass="ui-button-secondary"
+                                     onclick="PF('dlgEquipo').hide()"/>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

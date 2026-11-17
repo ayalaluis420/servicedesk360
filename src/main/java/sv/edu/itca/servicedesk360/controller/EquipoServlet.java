@@ -12,8 +12,9 @@ import sv.edu.itca.servicedesk360.dao.DAOException;
 import sv.edu.itca.servicedesk360.dao.EquipoDAO;
 import sv.edu.itca.servicedesk360.dao.impl.ClienteDAOImpl;
 import sv.edu.itca.servicedesk360.dao.impl.EquipoDAOImpl;
-import sv.edu.itca.servicedesk360.model.Cliente;
 import sv.edu.itca.servicedesk360.model.Equipo;
+import sv.edu.itca.servicedesk360.service.EquipoService;
+import sv.edu.itca.servicedesk360.service.ServiceException;
 
 /**
  * Guía 7, aplicación al proyecto: CRUD de equipos relacionado con
@@ -28,11 +29,13 @@ public class EquipoServlet extends HttpServlet {
 
     private EquipoDAO equipoDAO;
     private ClienteDAO clienteDAO;
+    private EquipoService equipoService;
 
     @Override
     public void init() {
         equipoDAO = new EquipoDAOImpl();
         clienteDAO = new ClienteDAOImpl();
+        equipoService = new EquipoService(equipoDAO, clienteDAO);
     }
 
     @Override
@@ -105,50 +108,21 @@ public class EquipoServlet extends HttpServlet {
 
     private void guardar(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+        // Guía 10: las reglas viven en EquipoService (compartidas con EquipoBean).
         Long id = Navegacion.leerId(req, "idEquipo");
         Long idCliente = Navegacion.leerId(req, "idCliente");
-        String codigo = Navegacion.texto(req, "codigoInventario").toUpperCase();
-        String tipo = Navegacion.texto(req, "tipo");
-        String marca = Navegacion.texto(req, "marca");
-        String modelo = Navegacion.texto(req, "modelo");
-        Equipo e = new Equipo(id, idCliente == null ? 0 : idCliente, codigo, tipo, marca, modelo, true);
-
-        String error = null;
-        Optional<Cliente> cliente = idCliente == null ? Optional.empty() : clienteDAO.buscarPorId(idCliente);
-        if (cliente.isEmpty()) {
-            error = "Seleccione un cliente válido.";
-        } else if (id == null && !cliente.get().isActivo()) {
-            error = "No se pueden registrar equipos para un cliente inactivo.";
-        } else if (codigo.length() < 3 || codigo.length() > 40) {
-            error = "El código de inventario debe tener entre 3 y 40 caracteres.";
-        } else if (tipo.length() < 2 || tipo.length() > 80) {
-            error = "El tipo debe tener entre 2 y 80 caracteres.";
-        } else if (marca.length() > 80 || modelo.length() > 80) {
-            error = "Marca y modelo admiten como máximo 80 caracteres.";
-        } else if (equipoDAO.existeCodigo(codigo, id)) {
-            error = "El código de inventario ya está registrado.";
-        }
-        if (error != null) {
-            req.setAttribute("error", error);
+        Equipo e = new Equipo(id, idCliente == null ? 0 : idCliente,
+                Navegacion.texto(req, "codigoInventario"), Navegacion.texto(req, "tipo"),
+                Navegacion.texto(req, "marca"), Navegacion.texto(req, "modelo"), true);
+        try {
+            boolean insertado = equipoService.guardar(e);
+            Navegacion.flash(req, "Equipo " + e.getCodigoInventario()
+                    + (insertado ? " registrado correctamente." : " actualizado correctamente."));
+            Navegacion.redirigir(req, resp, "/equipos");
+        } catch (ServiceException ex) {
+            req.setAttribute("error", ex.getMessage());
             mostrarFormulario(req, resp, e);
-            return;
         }
-
-        if (id == null) {
-            equipoDAO.insertar(e);
-            Navegacion.flash(req, "Equipo " + codigo + " registrado correctamente.");
-        } else {
-            Optional<Equipo> actual = equipoDAO.buscarPorId(id);
-            if (actual.isEmpty()) {
-                Navegacion.flashError(req, "Equipo no encontrado.");
-                Navegacion.redirigir(req, resp, "/equipos");
-                return;
-            }
-            e.setActivo(actual.get().isActivo());
-            equipoDAO.actualizar(e);
-            Navegacion.flash(req, "Equipo " + codigo + " actualizado correctamente.");
-        }
-        Navegacion.redirigir(req, resp, "/equipos");
     }
 
     private void eliminar(HttpServletRequest req) {
@@ -157,14 +131,11 @@ public class EquipoServlet extends HttpServlet {
             Navegacion.flashError(req, "Equipo no encontrado.");
             return;
         }
-        int tickets = equipoDAO.contarTickets(id);
-        if (tickets > 0) {
-            Navegacion.flashError(req, "No se puede eliminar: el equipo tiene " + tickets
-                    + " ticket(s) relacionado(s). Desactívelo para conservar el historial.");
-        } else if (equipoDAO.eliminar(id)) {
+        try {
+            equipoService.eliminar(id);
             Navegacion.flash(req, "Equipo eliminado.");
-        } else {
-            Navegacion.flashError(req, "Equipo no encontrado.");
+        } catch (ServiceException ex) {
+            Navegacion.flashError(req, ex.getMessage());
         }
     }
 }

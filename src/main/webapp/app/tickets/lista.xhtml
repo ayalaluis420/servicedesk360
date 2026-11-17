@@ -1,55 +1,302 @@
-<!DOCTYPE html>
-<!-- Guía 8, Parte K: tickets de solo lectura en JSF reutilizando TicketDetalleDTO y
-     la consulta JOIN de la Guía 7. Ejercicio 2: filtros con acción normal (sin AJAX). -->
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <h:head>
-        <meta charset="UTF-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>Tickets (JSF) | ServiceDesk 360</title>
-        <link rel="stylesheet" href="#{request.contextPath}/resources/css/estilos.css"/>
-    </h:head>
-    <h:body>
-        <main class="contenedor-crud ancho">
-            <h:form id="formTickets">
-                <p><h:commandLink value="&#8592; Inicio JSF" action="inicio"/></p>
-                <h1>Tickets <span class="etiqueta-jsf">JSF</span></h1>
-                <h:messages globalOnly="true" styleClass="mensajes" infoClass="alerta exito" errorClass="alerta error"/>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templates/plantilla.xhtml">
+    <!-- Guía 10: módulo de Tickets con PrimeFaces + AJAX.
+         Tabla con paginación, orden y filtros; diálogo de registro/edición;
+         cliente → equipos por AJAX; cambio de estado con confirmación. -->
 
-                <div class="barra-crud">
-                    <span class="nota">Mostrando #{ticketBean.tickets.size()} de #{ticketBean.total} ticket(s) (máximo #{ticketBean.limite}).</span>
-                    <div class="form-busqueda">
-                        <h:selectOneMenu id="estado" value="#{ticketBean.estado}">
-                            <f:selectItem itemLabel="Todos los estados" itemValue=""/>
+    <ui:define name="titulo">Tickets</ui:define>
+
+    <ui:define name="contenido">
+        <h:form id="frmTickets">
+            <div class="cabecera-modulo">
+                <h1>Tickets <span class="etiqueta-jsf">PrimeFaces</span></h1>
+                <!-- Ejercicio 19: contador que se actualiza tras cada cambio -->
+                <p:outputPanel id="contadorAbiertos">
+                    <p:tag value="#{ticketBean.abiertos} ticket(s) ABIERTO" severity="info" icon="pi pi-inbox"/>
+                </p:outputPanel>
+            </div>
+
+            <p:messages id="mensajes" showDetail="true" closable="true"/>
+
+            <p:toolbar styleClass="barra-tickets">
+                <p:toolbarGroup>
+                    <p:commandButton id="btnNuevo" value="Nuevo ticket" icon="pi pi-plus"
+                                     actionListener="#{ticketBean.prepararNuevo}"
+                                     process="@this" update=":frmDialogo"
+                                     oncomplete="PF('dlgTicket').show()">
+                        <p:resetInput target=":frmDialogo"/>
+                    </p:commandButton>
+                </p:toolbarGroup>
+                <p:toolbarGroup align="right">
+                    <h:panelGroup id="filtros" styleClass="filtros-externos">
+                        <!-- Parte I: filtros externos; consulta en MySQL por AJAX -->
+                        <p:selectOneMenu id="filtroEstado" value="#{ticketBean.filtroEstado}">
+                            <f:selectItem itemLabel="Todos los estados" itemValue="#{null}"/>
                             <f:selectItems value="#{ticketBean.estados}"/>
-                        </h:selectOneMenu>
-                        <h:selectOneMenu id="prioridad" value="#{ticketBean.prioridad}">
-                            <f:selectItem itemLabel="Todas las prioridades" itemValue=""/>
+                            <p:ajax listener="#{ticketBean.aplicarFiltros}" process="@this"
+                                    update="tablaTickets contadorAbiertos"/>
+                        </p:selectOneMenu>
+                        <p:selectOneMenu id="filtroPrioridad" value="#{ticketBean.filtroPrioridad}">
+                            <f:selectItem itemLabel="Todas las prioridades" itemValue="#{null}"/>
                             <f:selectItems value="#{ticketBean.prioridades}"/>
-                        </h:selectOneMenu>
-                        <h:commandButton value="Filtrar" action="#{ticketBean.filtrar}"/>
-                        <h:commandButton value="Limpiar" action="#{ticketBean.limpiar}"/>
-                    </div>
-                </div>
+                            <p:ajax listener="#{ticketBean.aplicarFiltros}" process="@this"
+                                    update="tablaTickets contadorAbiertos"/>
+                        </p:selectOneMenu>
+                        <!-- Ejercicio 17: limpia filtros externos y de columna; solo actualiza tabla y filtros -->
+                        <p:commandButton id="btnLimpiar" value="Limpiar filtros" icon="pi pi-filter-slash"
+                                         styleClass="ui-button-outlined"
+                                         actionListener="#{ticketBean.limpiarFiltros}"
+                                         process="@this" update="filtros tablaTickets contadorAbiertos"
+                                         oncomplete="PF('tablaTickets').clearFilters()"/>
+                    </h:panelGroup>
+                </p:toolbarGroup>
+            </p:toolbar>
 
-                <h:dataTable value="#{ticketBean.tickets}" var="t" styleClass="tabla-crud"
-                             rendered="#{not empty ticketBean.tickets}">
-                    <h:column><f:facet name="header">ID</f:facet>##{t.idTicket}</h:column>
-                    <h:column><f:facet name="header">Título</f:facet>#{t.titulo}</h:column>
-                    <h:column><f:facet name="header">Cliente</f:facet>#{t.cliente}</h:column>
-                    <h:column><f:facet name="header">Equipo</f:facet>#{empty t.equipo ? '—' : t.equipo}</h:column>
-                    <h:column><f:facet name="header">Categoría</f:facet>#{t.categoria}</h:column>
-                    <h:column><f:facet name="header">Técnico</f:facet>#{empty t.tecnico ? 'Sin asignar' : t.tecnico}</h:column>
-                    <h:column><f:facet name="header">Prioridad</f:facet>
-                        <span class="prioridad #{t.prioridad.toLowerCase()}">#{t.prioridad}</span></h:column>
-                    <h:column><f:facet name="header">Estado</f:facet>
-                        <span class="estado-ticket">#{t.estado}</span></h:column>
-                </h:dataTable>
-                <h:panelGroup rendered="#{empty ticketBean.tickets}">
-                    <p>No hay tickets con esos filtros.</p>
+            <p:dataTable id="tablaTickets" widgetVar="tablaTickets"
+                         value="#{ticketBean.tickets}" var="t"
+                         filteredValue="#{ticketBean.ticketsFiltrados}"
+                         paginator="true" rows="10" rowsPerPageTemplate="5,10,20"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords}"
+                         rowKey="#{t.idTicket}" selectionMode="single"
+                         selection="#{ticketBean.seleccionado}"
+                         emptyMessage="No hay tickets con esos filtros."
+                         sortBy="#{t.idTicket}" sortOrder="descending">
+
+                <!-- Parte J: selección de fila → panel de detalle -->
+                <p:ajax event="rowSelect" listener="#{ticketBean.alSeleccionar}" update=":frmTickets:panelDetalle"/>
+
+                <p:column headerText="ID" sortBy="#{t.idTicket}" style="width:5rem">
+                    <h:outputText value="##{t.idTicket}"/>
+                </p:column>
+                <p:column headerText="Título" sortBy="#{t.titulo}" filterBy="#{t.titulo}" filterMatchMode="contains">
+                    <h:outputText value="#{t.titulo}"/>
+                </p:column>
+                <p:column headerText="Cliente" sortBy="#{t.cliente}" filterBy="#{t.cliente}" filterMatchMode="contains">
+                    <h:outputText value="#{t.cliente}"/>
+                </p:column>
+                <p:column headerText="Equipo" sortBy="#{t.equipo}">
+                    <h:outputText value="#{empty t.equipo ? '—' : t.equipo}"/>
+                </p:column>
+                <p:column headerText="Técnico" sortBy="#{t.tecnico}" filterBy="#{t.tecnico}" filterMatchMode="contains">
+                    <h:outputText value="#{empty t.tecnico ? 'Sin asignar' : t.tecnico}"/>
+                </p:column>
+                <!-- Ejercicio 16: prioridad y estado como p:tag -->
+                <p:column headerText="Prioridad" sortBy="#{t.prioridad}" filterBy="#{t.prioridad}" filterMatchMode="contains" style="width:8rem">
+                    <p:tag value="#{t.prioridad}" severity="#{ticketBean.severidad(t.prioridad)}"/>
+                </p:column>
+                <p:column headerText="Estado" sortBy="#{t.estado}" filterBy="#{t.estado}" filterMatchMode="contains" style="width:9rem">
+                    <p:tag value="#{t.estado}" severity="#{ticketBean.severidadEstado(t.estado)}"/>
+                </p:column>
+                <p:column headerText="Acciones" style="width:15rem" styleClass="acciones-fila">
+                    <!-- Paso 8: process="@this" basta, solo se necesita el ticket de la fila -->
+                    <p:commandButton icon="pi pi-pencil" title="Editar" styleClass="rounded-button ui-button-outlined"
+                                     actionListener="#{ticketBean.prepararEdicion(t)}"
+                                     process="@this" update=":frmDialogo :frmTickets:mensajes"
+                                     oncomplete="if (args.abrir) PF('dlgTicket').show()">
+                        <p:resetInput target=":frmDialogo"/>
+                    </p:commandButton>
+                    <p:commandButton icon="pi pi-eye" title="Ver detalle" styleClass="rounded-button ui-button-outlined"
+                                     actionListener="#{ticketBean.verDetalle(t)}"
+                                     process="@this" update=":frmDetalle"
+                                     oncomplete="PF('dlgDetalle').show()"/>
+                    <!-- Parte G: cambio de estado con confirmación (respeta las transiciones de la Guía 7).
+                         Ids ABSOLUTOS en update: la tabla es un naming container y un id relativo
+                         como "mensajes" se buscaría dentro de ella y se ignoraría en silencio. -->
+                    <p:commandButton icon="pi pi-play" title="Iniciar atención" styleClass="rounded-button ui-button-warning"
+                                     rendered="#{ticketBean.puede(t, 'EN_PROCESO')}"
+                                     action="#{ticketBean.iniciarAtencion(t)}" process="@this"
+                                     update=":frmTickets:tablaTickets :frmTickets:mensajes :frmTickets:contadorAbiertos :frmTickets:panelDetalle">
+                        <p:confirm header="Confirmación" message="¿Desea cambiar el ticket ##{t.idTicket} a EN_PROCESO?"
+                                   icon="pi pi-exclamation-triangle"/>
+                    </p:commandButton>
+                    <p:commandButton icon="pi pi-check" title="Resolver" styleClass="rounded-button ui-button-success"
+                                     rendered="#{ticketBean.puede(t, 'RESUELTO')}"
+                                     action="#{ticketBean.resolver(t)}" process="@this"
+                                     update=":frmTickets:tablaTickets :frmTickets:mensajes :frmTickets:contadorAbiertos :frmTickets:panelDetalle">
+                        <p:confirm header="Confirmación" message="¿Marcar el ticket ##{t.idTicket} como RESUELTO?"
+                                   icon="pi pi-exclamation-triangle"/>
+                    </p:commandButton>
+                    <p:commandButton icon="pi pi-lock" title="Cerrar" styleClass="rounded-button ui-button-secondary"
+                                     rendered="#{ticketBean.puede(t, 'CERRADO')}"
+                                     action="#{ticketBean.cerrar(t)}" process="@this"
+                                     update=":frmTickets:tablaTickets :frmTickets:mensajes :frmTickets:contadorAbiertos :frmTickets:panelDetalle">
+                        <p:confirm header="Confirmación" message="¿Cerrar el ticket ##{t.idTicket}? Un ticket cerrado ya no se puede reabrir."
+                                   icon="pi pi-exclamation-triangle"/>
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+
+            <!-- Parte J, paso 25: panel de detalle de la fila seleccionada -->
+            <p:outputPanel id="panelDetalle">
+                <p:panel header="Detalle del ticket ##{ticketBean.seleccionado.idTicket}"
+                         rendered="#{not empty ticketBean.seleccionado}" styleClass="panel-detalle">
+                    <div class="ficha">
+                        <span class="dt">Cliente</span><span>#{ticketBean.seleccionado.cliente}</span>
+                        <span class="dt">Equipo</span><span>#{empty ticketBean.seleccionado.equipo ? '—' : ticketBean.seleccionado.equipo}</span>
+                        <span class="dt">Categoría</span><span>#{ticketBean.seleccionado.categoria}</span>
+                        <span class="dt">Técnico</span><span>#{empty ticketBean.seleccionado.tecnico ? 'Sin asignar' : ticketBean.seleccionado.tecnico}</span>
+                        <span class="dt">Estado</span><span><p:tag value="#{ticketBean.seleccionado.estado}" severity="#{ticketBean.severidadEstado(ticketBean.seleccionado.estado)}"/></span>
+                    </div>
+                    <h3>Seguimientos</h3>
+                    <ul class="lista-seguimientos">
+                        <ui:repeat value="#{ticketBean.seguimientos}" var="s">
+                            <li><strong>#{s.fechaRegistro.toString().replace('T', ' ').substring(0, 16)}</strong> — #{s.detalle}</li>
+                        </ui:repeat>
+                    </ul>
+                </p:panel>
+                <h:panelGroup rendered="#{empty ticketBean.seleccionado}">
+                    <p class="nota">Seleccione una fila para ver el detalle del ticket y sus seguimientos.</p>
                 </h:panelGroup>
-            </h:form>
-        </main>
-    </h:body>
-</html>
+            </p:outputPanel>
+        </h:form>
+
+        <!-- Parte G: diálogo de confirmación global -->
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="380">
+            <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check"/>
+            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-secondary" icon="pi pi-times"/>
+        </p:confirmDialog>
+
+        <!-- Parte D: formulario separado para el diálogo (sin formularios anidados) -->
+        <h:form id="frmDialogo">
+            <p:dialog id="dlgTicket" widgetVar="dlgTicket" modal="true" responsive="true" width="650" fitViewport="true"
+                      header="#{ticketBean.edicion ? 'Editar ticket #'.concat(ticketBean.ticket.idTicket) : 'Nuevo ticket'}">
+                <!-- Se actualiza este panel y NO el p:dialog: re-renderizar el diálogo lo cierra -->
+                <p:outputPanel id="contenidoDialogo">
+                <p:messages id="msgDialogo" showDetail="true" closable="true" globalOnly="true"/>
+
+                <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank form-dialogo"
+                             columnClasses="ui-g-12 ui-md-4, ui-g-12 ui-md-8">
+                    <p:outputLabel for="cliente" value="Cliente"/>
+                    <h:panelGroup>
+                        <!-- Parte E: cliente → equipos por AJAX (process solo este campo) -->
+                        <p:selectOneMenu id="cliente" value="#{ticketBean.ticket.idCliente}" required="true"
+                                         requiredMessage="Seleccione un cliente." style="width:100%">
+                            <f:selectItem itemLabel="Seleccione..." itemValue="#{null}" noSelectionOption="true"/>
+                            <f:selectItems value="#{ticketBean.clientes}" var="c"
+                                           itemValue="#{c.idCliente}" itemLabel="#{c.nombre}"/>
+                            <p:ajax listener="#{ticketBean.cargarEquipos}" process="@this" update="equipo msgEquipo msgCliente"/>
+                        </p:selectOneMenu>
+                        <p:message id="msgCliente" for="cliente" display="text"/>
+                    </h:panelGroup>
+
+                    <p:outputLabel for="equipo" value="Equipo"/>
+                    <h:panelGroup>
+                        <p:selectOneMenu id="equipo" value="#{ticketBean.ticket.idEquipo}" required="true"
+                                         requiredMessage="Seleccione un equipo." style="width:100%">
+                            <f:selectItem itemLabel="#{empty ticketBean.equiposCliente ? 'Seleccione primero un cliente' : 'Seleccione...'}"
+                                          itemValue="#{null}" noSelectionOption="true"/>
+                            <f:selectItems value="#{ticketBean.equiposCliente}" var="e" itemValue="#{e.idEquipo}"
+                                           itemLabel="#{e.codigoInventario} - #{e.tipo} #{e.marca}"/>
+                        </p:selectOneMenu>
+                        <p:message id="msgEquipo" for="equipo" display="text"/>
+                    </h:panelGroup>
+
+                    <p:outputLabel for="categoria" value="Categoría"/>
+                    <h:panelGroup>
+                        <p:selectOneMenu id="categoria" value="#{ticketBean.ticket.idCategoria}" required="true"
+                                         requiredMessage="Seleccione una categoría." style="width:100%">
+                            <f:selectItem itemLabel="Seleccione..." itemValue="#{null}" noSelectionOption="true"/>
+                            <f:selectItems value="#{ticketBean.categorias}" var="cat"
+                                           itemValue="#{cat.idCategoria}" itemLabel="#{cat.nombre}"/>
+                        </p:selectOneMenu>
+                        <p:message for="categoria" display="text"/>
+                    </h:panelGroup>
+
+                    <p:outputLabel for="tecnico" value="Técnico"/>
+                    <h:panelGroup>
+                        <p:selectOneMenu id="tecnico" value="#{ticketBean.ticket.idTecnico}" required="true"
+                                         requiredMessage="Seleccione un técnico." style="width:100%">
+                            <f:selectItem itemLabel="Seleccione..." itemValue="#{null}" noSelectionOption="true"/>
+                            <f:selectItems value="#{ticketBean.tecnicos}" var="tec" itemValue="#{tec.idTecnico}"
+                                           itemLabel="#{tec.nombre} (nivel #{tec.nivelSoporte})"/>
+                        </p:selectOneMenu>
+                        <p:message for="tecnico" display="text"/>
+                    </h:panelGroup>
+
+                    <p:outputLabel for="prioridad" value="Prioridad"/>
+                    <h:panelGroup>
+                        <p:selectOneMenu id="prioridad" value="#{ticketBean.ticket.prioridad}" required="true"
+                                         requiredMessage="Seleccione una prioridad." style="width:100%">
+                            <f:selectItem itemLabel="Seleccione..." itemValue="#{null}" noSelectionOption="true"/>
+                            <f:selectItems value="#{ticketBean.prioridades}"/>
+                        </p:selectOneMenu>
+                        <p:message for="prioridad" display="text"/>
+                    </h:panelGroup>
+
+                    <!-- Parte F: convertidor + validador de longitud + mensaje por campo -->
+                    <p:outputLabel for="titulo" value="Título"/>
+                    <h:panelGroup>
+                        <p:inputText id="titulo" value="#{ticketBean.ticket.titulo}" required="true"
+                                     requiredMessage="El título es obligatorio." style="width:100%"
+                                     validatorMessage="El título debe tener entre 5 y 120 caracteres.">
+                            <f:converter converterId="textoNormalizado"/>
+                            <f:validateLength minimum="5" maximum="120"/>
+                        </p:inputText>
+                        <p:message for="titulo" display="text"/>
+                    </h:panelGroup>
+
+                    <p:outputLabel for="descripcion" value="Descripción"/>
+                    <h:panelGroup>
+                        <p:inputTextarea id="descripcion" value="#{ticketBean.ticket.descripcion}" rows="3"
+                                         required="true" requiredMessage="La descripción es obligatoria." style="width:100%"
+                                         validatorMessage="La descripción debe tener entre 10 y 1000 caracteres.">
+                            <f:converter converterId="textoNormalizado"/>
+                            <f:validateLength minimum="10" maximum="1000"/>
+                        </p:inputTextarea>
+                        <p:message for="descripcion" display="text"/>
+                    </h:panelGroup>
+
+                    <p:outputLabel for="detalle" value="Seguimiento inicial" rendered="#{not ticketBean.edicion}"/>
+                    <h:panelGroup rendered="#{not ticketBean.edicion}">
+                        <p:inputTextarea id="detalle" value="#{ticketBean.detalleInicial}" rows="2" required="true"
+                                         requiredMessage="El seguimiento inicial es obligatorio." style="width:100%"
+                                         validatorMessage="El seguimiento admite como máximo 800 caracteres.">
+                            <f:converter converterId="textoNormalizado"/>
+                            <f:validateLength maximum="800"/>
+                        </p:inputTextarea>
+                        <p:message for="detalle" display="text"/>
+                    </h:panelGroup>
+                </p:panelGrid>
+                </p:outputPanel>
+
+                <f:facet name="footer">
+                    <!-- Paso 10: process="@form" (todos los campos); el diálogo se cierra solo si no hubo errores -->
+                    <p:commandButton id="btnGuardar" value="Guardar" icon="pi pi-save"
+                                     action="#{ticketBean.guardar}" process="@form"
+                                     update="contenidoDialogo :frmTickets:tablaTickets :frmTickets:mensajes :frmTickets:contadorAbiertos :frmTickets:panelDetalle"
+                                     oncomplete="if (!args.validationFailed) PF('dlgTicket').hide();"/>
+                    <p:commandButton value="Cancelar" icon="pi pi-times" type="button" styleClass="ui-button-secondary"
+                                     onclick="PF('dlgTicket').hide()"/>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+
+        <!-- Ejercicio 18: diálogo de detalle de solo lectura -->
+        <h:form id="frmDetalle">
+            <p:dialog id="dlgDetalle" widgetVar="dlgDetalle" modal="true" responsive="true" width="620" fitViewport="true"
+                      header="Ticket ##{ticketBean.seleccionado.idTicket} (solo lectura)">
+                <h:panelGroup rendered="#{not empty ticketBean.seleccionado}">
+                    <h3>#{ticketBean.seleccionado.titulo}</h3>
+                    <div class="ficha">
+                        <span class="dt">Cliente</span><span>#{ticketBean.seleccionado.cliente}</span>
+                        <span class="dt">Equipo</span><span>#{ticketBean.seleccionado.equipo}</span>
+                        <span class="dt">Categoría</span><span>#{ticketBean.seleccionado.categoria}</span>
+                        <span class="dt">Técnico</span><span>#{ticketBean.seleccionado.tecnico}</span>
+                        <span class="dt">Prioridad</span><span><p:tag value="#{ticketBean.seleccionado.prioridad}" severity="#{ticketBean.severidad(ticketBean.seleccionado.prioridad)}"/></span>
+                        <span class="dt">Estado</span><span><p:tag value="#{ticketBean.seleccionado.estado}" severity="#{ticketBean.severidadEstado(ticketBean.seleccionado.estado)}"/></span>
+                        <span class="dt">Descripción</span><span>#{ticketBean.seleccionado.descripcion}</span>
+                    </div>
+                    <p:dataTable value="#{ticketBean.seguimientos}" var="s" size="small" emptyMessage="Sin seguimientos.">
+                        <p:column headerText="Fecha" style="width:10rem">#{s.fechaRegistro.toString().replace('T', ' ').substring(0, 16)}</p:column>
+                        <p:column headerText="Seguimiento">#{s.detalle}</p:column>
+                    </p:dataTable>
+                </h:panelGroup>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

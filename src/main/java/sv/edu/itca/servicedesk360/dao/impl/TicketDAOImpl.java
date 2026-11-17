@@ -115,7 +115,53 @@ public class TicketDAOImpl implements TicketDAO {
         }
     }
 
+    @Override
+    public boolean actualizar(Connection cn, Ticket t) {
+        String sql = "UPDATE tickets SET id_cliente = ?, id_equipo = ?, id_tecnico = ?, "
+                + "id_categoria = ?, titulo = ?, descripcion = ?, prioridad = ? "
+                + "WHERE id_ticket = ? AND estado <> 'CERRADO'";
+        try (PreparedStatement ps = cn.prepareStatement(sql)) {
+            ps.setLong(1, t.getIdCliente());
+            setLongONull(ps, 2, t.getIdEquipo());
+            setLongONull(ps, 3, t.getIdTecnico());
+            ps.setLong(4, t.getIdCategoria());
+            ps.setString(5, t.getTitulo());
+            ps.setString(6, t.getDescripcion());
+            ps.setString(7, t.getPrioridad());
+            ps.setLong(8, t.getIdTicket());
+            return ps.executeUpdate() == 1;
+        } catch (SQLException ex) {
+            throw error("Error actualizando el ticket", ex);
+        }
+    }
+
     // ----------------------------------------------------------- lectura
+
+    @Override
+    public Optional<Ticket> buscarPorId(long idTicket) {
+        String sql = "SELECT id_ticket, id_cliente, id_equipo, id_tecnico, id_categoria, "
+                + "titulo, descripcion, prioridad, estado, fecha_creacion "
+                + "FROM tickets WHERE id_ticket = ?";
+        try (Connection cn = ConexionBD.obtenerConexion();
+                PreparedStatement ps = cn.prepareStatement(sql)) {
+            ps.setLong(1, idTicket);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    return Optional.empty();
+                }
+                long eq = rs.getLong("id_equipo");
+                Long idEquipo = rs.wasNull() ? null : eq;
+                long tec = rs.getLong("id_tecnico");
+                Long idTecnico = rs.wasNull() ? null : tec;
+                return Optional.of(new Ticket(rs.getLong("id_ticket"), rs.getLong("id_cliente"),
+                        idEquipo, idTecnico, rs.getLong("id_categoria"), rs.getString("titulo"),
+                        rs.getString("descripcion"), rs.getString("prioridad"), rs.getString("estado"),
+                        rs.getTimestamp("fecha_creacion").toLocalDateTime()));
+            }
+        } catch (SQLException ex) {
+            throw error("No fue posible consultar el ticket", ex);
+        }
+    }
 
     @Override
     public List<TicketDetalleDTO> listarDetalle(String estado, String prioridad,

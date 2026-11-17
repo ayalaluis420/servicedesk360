@@ -134,8 +134,16 @@ public class TicketService {
         }
     }
 
-    /** Paso 16: validaciones de entrada. */
+    /** Paso 16: validaciones de entrada (registro). */
     private void validar(Ticket t, String detalle) throws ServiceException {
+        validarDatos(t);
+        if (detalle == null || detalle.isBlank()) {
+            throw new ServiceException("El detalle del seguimiento inicial es obligatorio.");
+        }
+    }
+
+    /** Validaciones de los datos del ticket (registro y edición). */
+    private void validarDatos(Ticket t) throws ServiceException {
         if (t.getIdCliente() <= 0) {
             throw new ServiceException("Seleccione un cliente.");
         }
@@ -160,9 +168,6 @@ public class TicketService {
         t.setDescripcion(descripcion);
         if (!PRIORIDADES.contains(t.getPrioridad())) {
             throw new ServiceException("Prioridad no válida.");
-        }
-        if (detalle == null || detalle.isBlank()) {
-            throw new ServiceException("El detalle del seguimiento inicial es obligatorio.");
         }
     }
 
@@ -193,6 +198,55 @@ public class TicketService {
         } catch (DAOException ex) {
             throw new ServiceException("No fue posible validar los datos. Intente más tarde.", ex);
         }
+    }
+
+    // ------------------------------------------------- edición (Guía 10)
+
+    /** Guía 10: ticket (entidad) para el diálogo de edición. */
+    public Optional<Ticket> buscarTicket(long idTicket) {
+        return ticketDAO.buscarPorId(idTicket);
+    }
+
+    /**
+     * Guía 10: edita un ticket con las mismas reglas del registro
+     * (cliente activo, equipo del cliente, categoría habilitada, técnico
+     * activo, CRITICA con nivel 3...). La actualización y el seguimiento
+     * que la documenta se confirman juntos. Un ticket CERRADO no se edita.
+     */
+    public void actualizarTicket(Ticket ticket) throws ServiceException {
+        if (ticket.getIdTicket() == null) {
+            throw new ServiceException("Ticket no encontrado.");
+        }
+        validarDatos(ticket);
+        validarRelaciones(ticket);
+
+        try (Connection cn = ConexionBD.obtenerConexion()) {
+            cn.setAutoCommit(false);
+            try {
+                if (!ticketDAO.actualizar(cn, ticket)) {
+                    cn.rollback();
+                    throw new ServiceException("El ticket no existe o está CERRADO: no se puede editar.");
+                }
+                Seguimiento s = new Seguimiento();
+                s.setIdTicket(ticket.getIdTicket());
+                s.setDetalle("Ticket editado: prioridad " + ticket.getPrioridad() + ", título \""
+                        + recortar(ticket.getTitulo(), 120) + "\".");
+                seguimientoDAO.registrar(cn, s);
+                cn.commit();
+            } catch (RuntimeException ex) {
+                cn.rollback();
+                throw new ServiceException("No se actualizó el ticket: la operación fue revertida.", ex);
+            } finally {
+                cn.setAutoCommit(true);
+            }
+        } catch (SQLException ex) {
+            LOG.log(Level.WARNING, "Fallo de conexión al actualizar ticket", ex);
+            throw new ServiceException("No fue posible completar el proceso. Intente más tarde.", ex);
+        }
+    }
+
+    private static String recortar(String texto, int max) {
+        return texto.length() > max ? texto.substring(0, max) : texto;
     }
 
     // ------------------------------- cambio de estado (Partes J y Ej. 3)
